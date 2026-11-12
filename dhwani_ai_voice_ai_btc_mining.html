@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ধ্বনি এ আই (Dhwani AI) - ভয়েস এআই ও রোলপ্লে</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#10b981',
+                            600: '#059669',
+                            900: '#064e3b',
+                            accent: '#00f2fe',
+                            btc: '#f7931a'
+                        },
+                        darkBg: '#0b0f19',
+                        cardBg: '#131b2e'
+                    },
+                    fontFamily: {
+                        sans: ['Hind Siliguri', 'Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            font-family: 'Hind Siliguri', 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+        .neon-glow {
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+        }
+        .neon-glow-btc {
+            box-shadow: 0 0 25px rgba(247, 147, 26, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        .pulse-ring {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse 1.6s infinite cubic-bezier(0.66, 0, 0, 1);
+        }
+        @keyframes pulse {
+            to {
+                box-shadow: 0 0 0 25px rgba(16, 185, 129, 0);
+            }
+        }
+        .waveform-bar {
+            transition: height 0.1s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-500 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid font-bold fa-microphone-lines"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">ধ্বনি এ আই</h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Dhwani AI • Real-Time Voice Grammar & Roleplay</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex items-center gap-1 sm:gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                <button onclick="switchTab('studio')" id="tab-studio" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition bg-slate-800 text-cyan-400 flex items-center gap-2">
+                    <i class="fa-solid fa-microphone"></i> <span class="hidden sm:inline">ভয়েস স্টুডিও</span>
+                </button>
+                <button onclick="switchTab('corpus')" id="tab-corpus" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark"></i> <span class="hidden sm:inline">গ্রামার নলেজবেস</span>
+                </button>
+                <button onclick="switchTab('history')" id="tab-history" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span class="hidden sm:inline">ট্রান্সক্রিপ্ট</span>
+                </button>
+                <button onclick="switchTab('mining')" id="tab-mining" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-2">
+                    <i class="fa-brands fa-bitcoin text-amber-500"></i> <span class="hidden sm:inline">BTC মাইনিং</span>
+                </button>
+            </nav>
+
+            <!-- Mining Mini Widget -->
+            <div class="hidden md:flex items-center gap-3 bg-slate-900/90 border border-amber-500/30 px-3 py-1.5 rounded-xl">
+                <i class="fa-brands fa-bitcoin text-amber-500 animate-pulse text-lg"></i>
+                <div class="text-right">
+                    <div class="text-[10px] text-slate-400">মাইনিং রিওয়ার্ড (১০%)</div>
+                    <div class="text-xs font-mono font-bold text-amber-400" id="header-reward">0.00000000 BTC</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto w-full p-4 lg:p-6 flex-1 flex flex-col gap-6">
+
+        <!-- ================= STUDIO TAB ================= -->
+        <section id="view-studio" class="flex flex-col lg:flex-row gap-6 h-full">
+            
+            <!-- Left Panel: Controls & Roleplay Config -->
+            <div class="w-full lg:w-1/3 flex flex-col gap-5">
+                <!-- Character & Language Config -->
+                <div class="bg-cardBg border border-slate-800 rounded-2xl p-5 shadow-xl">
+                    <h2 class="text-base font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-cyan-400"></i> ক্যারেক্টার ও ভাষা সেটআপ
+                    </h2>
+
+                    <div class="space-y-4">
+                        <!-- Language Selection -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">প্র্যাকটিসের ভাষা (Language)</label>
+                            <select id="select-language" onchange="updateSystemPrompt()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-400">
+                                <option value="bn-BD">বাংলা (Bengali)</option>
+                                <option value="en-US">English (ইংরেজি)</option>
+                                <option value="hi-IN">হিন্দি (Hindi)</option>
+                                <option value="zh-CN">চাইনিজ (Chinese / 中文)</option>
+                            </select>
+                        </div>
+
+                        <!-- Persona Character -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">ক্যারেক্টার ভুমিকা (Roleplay Persona)</label>
+                            <select id="select-persona" onchange="updateSystemPrompt()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-400">
+                                <option value="professor">কঠোর গ্রামার প্রফেসর (Strict Grammar Professor)</option>
+                                <option value="friend">বান্ধব বহুভাষী বন্ধু (Friendly Polyglot Companion)</option>
+                                <option value="interviewer">কর্পোরেট ইন্টারভিউয়ার (Business Interviewer)</option>
+                                <option value="storyteller">লোকগাথা গল্পকার (Native Storyteller)</option>
+                            </select>
+                        </div>
+
+                        <!-- Voice Type -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">এআই ভয়েস টিউন (AI Voice Modality)</label>
+                            <select id="select-voice" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-400">
+                                <option value="Kore">Kore (Standard Clear)</option>
+                                <option value="Zephyr">Zephyr (Warm Accent)</option>
+                                <option value="Puck">Puck (Upbeat)</option>
+                                <option value="Fenrir">Fenrir (Deep & Expressive)</option>
+                            </select>
+                        </div>
+
+                        <!-- Grammar Auto-Correction Toggle -->
+                        <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                            <div>
+                                <span class="text-xs font-medium text-slate-200">লাইভ গ্রামার কারেকশন</span>
+                                <p class="text-[10px] text-slate-400">ভুল উচ্চারণ ও ব্যাকরণ সাথে সাথে শুধরে দিবে</p>
+                            </div>
+                            <input type="checkbox" id="toggle-grammar" checked class="w-4 h-4 accent-cyan-400 rounded cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Data Center Computations Status -->
+                <div class="bg-cardBg border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 text-slate-800/20 text-8xl font-bold">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ডাটা সেন্টার ও বিটকয়েন স্ট্যাটাস
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                            <span class="text-[11px] text-slate-400 block">কম্পিউট সার্ভিস</span>
+                            <span class="font-semibold text-emerald-400 text-xs">অটো-পেড (৯০%)</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                            <span class="text-[11px] text-slate-400 block">ইউজার পে-আউট</span>
+                            <span class="font-semibold text-amber-400 text-xs" id="side-user-payout">0.00000000 BTC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Audio Interface & Visualizer -->
+            <div class="w-full lg:w-2/3 flex flex-col justify-between bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-2xl relative min-h-[500px]">
+                
+                <!-- Active Persona Badge & Speech Status -->
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-slate-900 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xl" id="persona-icon">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-100" id="persona-title">কঠোর গ্রামার প্রফেসর</h3>
+                            <p class="text-xs text-slate-400" id="persona-desc">আপনার ব্যাকরণ সঠিক হচ্ছে কিনা তা পর্যবেক্ষণ করা হচ্ছে...</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="speech-badge" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-400 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-slate-500"></span> মাইক্রোফোন নিষ্ক্রিয়
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Center Audio Visualizer Screen -->
+                <div class="my-auto py-8 flex flex-col items-center justify-center relative">
+                    <!-- Glowing Orbital Aura -->
+                    <div id="visualizer-aura" class="w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-center relative transition-all duration-500">
+                        <!-- Canvas Waveform -->
+                        <canvas id="waveform-canvas" class="w-full h-full rounded-full"></canvas>
+                        
+                        <!-- Mic Button inside Visualizer -->
+                        <button id="btn-toggle-mic" onclick="toggleAudioSession()" class="absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-cyan-500 to-emerald-500 text-slate-950 font-bold text-3xl flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
+                            <i class="fa-solid fa-microphone" id="mic-icon"></i>
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-slate-400 mt-6 text-center" id="mic-instruction">
+                        কথোপকথন শুরু করতে মাইক বোতামে ট্যাপ করুন (Tap mic to start audio conversation)
+                    </p>
+                </div>
+
+                <!-- Real-time Live Subtitles Container -->
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 min-h-[100px] flex flex-col justify-center">
+                    <div class="text-[11px] uppercase tracking-wider text-cyan-400 font-bold mb-1 flex items-center justify-between">
+                        <span><i class="fa-solid fa-closed-captioning"></i> লাইভ সাবটাইটেল (Subtitles)</span>
+                        <span class="text-slate-500 text-[10px]" id="current-lang-tag">Bengali</span>
+                    </div>
+                    <!-- Subtitle text box -->
+                    <div id="subtitle-box" class="text-sm sm:text-base text-slate-200 font-medium italic min-h-[1.5rem]">
+                        "মাইক্রোফোন চালু করে কথা বলুন, এখানে রিয়েল-টাইম সাবটাইটেল ভেসে উঠবে..."
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= GRAMMAR CORPUS TAB ================= -->
+        <section id="view-corpus" class="hidden flex-col gap-6">
+            <div class="bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open-reader text-cyan-400"></i> ফিড করা গ্রামার কর্পাস নলেজবেস
+                        </h2>
+                        <p class="text-xs text-slate-400">ইংরেজি, বাংলা ও চাইনিজ ব্যাকরণ সংক্রান্ত ব্যাকঅ্যান্ড নিয়মকানুন</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="renderCorpus('bn')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-cyan-400 border border-cyan-500/30">বাংলা ব্যাকরণ</button>
+                        <button onclick="renderCorpus('en')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-cyan-400">English Rules</button>
+                        <button onclick="renderCorpus('zh')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-cyan-400">中文 语法 (Chinese)</button>
+                    </div>
+                </div>
+
+                <!-- Corpus Rules List Container -->
+                <div id="corpus-content" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Loaded dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= HISTORY TAB ================= -->
+        <section id="view-history" class="hidden flex-col gap-6">
+            <div class="bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i> অডিও ট্রান্সক্রিপ্ট ও ব্যাকরণ রিভিউ
+                        </h2>
+                        <p class="text-xs text-slate-400">আপনার সংরক্ষিত কথোপকথনের সম্পূর্ণ রেকর্ড</p>
+                    </div>
+                    <button onclick="exportTranscript()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-download"></i> ডাইনলোড/এক্সপোর্ট
+                    </button>
+                </div>
+
+                <!-- Transcript Logs -->
+                <div id="transcript-history-list" class="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+                    <div class="text-center py-12 text-slate-500 text-sm">
+                        এখনো কোনো কথা বলা হয়নি। কথা বললে এখানে ইতিহাস জমা হবে।
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= BTC MINING & REWARD TAB ================= -->
+        <section id="view-mining" class="hidden flex-col gap-6">
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Total Generated BTC -->
+                <div class="bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs font-medium text-slate-400">মোট জেনারেটেড বিটকয়েন</span>
+                            <h3 class="text-2xl font-bold font-mono text-amber-400 mt-1" id="dash-btc-total">0.00000000 BTC</h3>
+                        </div>
+                        <div class="p-3 bg-amber-500/10 text-amber-500 rounded-xl">
+                            <i class="fa-brands fa-bitcoin text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="text-[11px] text-slate-400">মাইক্রোফোন সক্রিয় ব্যবহারের ওপর ভিত্তি করে অর্জিত</div>
+                </div>
+
+                <!-- Datacenter Share (90%) -->
+                <div class="bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs font-medium text-slate-400">ডাটা সেন্টার কম্পিউট ফি (৯০%)</span>
+                            <h3 class="text-2xl font-bold font-mono text-cyan-400 mt-1" id="dash-btc-datacenter">0.00000000 BTC</h3>
+                        </div>
+                        <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl">
+                            <i class="fa-solid fa-server text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="text-[11px] text-slate-400">অটোমেটিক ডিরেক্ট পে-আউট টু ক্লাউড প্রোভাইডার</div>
+                </div>
+
+                <!-- User Reward (10%) -->
+                <div class="bg-cardBg border border-slate-800 border-amber-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden neon-glow-btc">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-xs font-semibold text-amber-400">ইউজার এক্টিভ রিওয়ার্ড কমিশন (১০%)</span>
+                            <h3 class="text-2xl font-bold font-mono text-emerald-400 mt-1" id="dash-btc-user">0.00000000 BTC</h3>
+                        </div>
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                            <i class="fa-solid fa-wallet text-2xl"></i>
+                        </div>
+                    </div>
+                    <button onclick="claimReward()" class="w-full mt-2 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-emerald-500 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 active:scale-95 transition">
+                        উইথড্র / ক্লেইম বিটকয়েন
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detailed Status & Realtime Simulation Logs -->
+            <div class="bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h3 class="text-base font-bold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-microchip text-cyan-400"></i> লাইভ মাইনিং ও কম্পিউট লক
+                </h3>
+                <div class="bg-slate-950 rounded-xl p-4 font-mono text-xs text-slate-400 h-48 overflow-y-auto custom-scrollbar border border-slate-800 space-y-2" id="mining-logs">
+                    <div>[SYSTEM] Dhwani AI Micro-Mining Protocol Ready.</div>
+                    <div>[SYSTEM] Listening to microphone runtime events...</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-4 text-center text-xs text-slate-500">
+        <p>© 2026 ধ্বনি এ আই (Dhwani AI) • Multilingual Voice Grammar & BTC Protocol</p>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 px-4 py-3 rounded-xl bg-slate-800 border border-cyan-500/40 text-slate-200 text-xs font-semibold shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-cyan-400"></i> <span id="toast-msg">নোটিফিকেশন বার্তা</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        /* ================= KNOWLEDGE BASE / GRAMMAR CORPUS ================= */
+        const GRAMMAR_CORPUS = {
+            bn: [
+                { title: "সাধু ও চলিত ভাষার মিশ্রণ (গুরুচণ্ডালী দোষ)", desc: "একই বাক্যে সাধু ও চলিত রূপের মিশ্রণ ব্যাকরণগত ভুল। যেমন: 'তিনি সেখানে গিয়াছিলেন' না বলে 'তিনি সেখানে গিয়েছিলেন' বলা উচিত।" },
+                { title: "ণ-ত্ব ও ষ-ত্ব বিধান", desc: "তৎসম শব্দে ণ ও ষ-এর ব্যবহারের সঠিক নিয়ম মানতে হবে। যেমন: 'করণ', 'কারণ', 'কষ্ট', 'মানুষ' ইত্যাদি।" },
+                { title: "বচনের দ্বিত্ব প্রয়োগ", desc: "একই বাক্যে বহুবচনের দ্বি-প্রয়োগ অশুদ্ধ। যেমন: 'সকল মানুষেরা' অশুদ্ধ, সঠিক রূপ 'সকল মানুষ' বা 'মানুষেরা'।" },
+                { title: "উচ্চারণ ও স্বরভক্তি", desc: "বাংলা অডিও কথোপকথনে স্পষ্ট উচ্চারণ বজায় রাখা আবশ্যক।" }
+            ],
+            en: [
+                { title: "Subject-Verb Agreement", desc: "A singular subject takes a singular verb, while a plural subject takes a plural verb. E.g., 'He runs' vs 'They run'." },
+                { title: "Tense Consistency", desc: "Avoid shifting tenses unnecessarily within a conversation or narrative." },
+                { title: "Common Misuse: Prepositions", desc: "Incorrect: 'Discuss about the topic'. Correct: 'Discuss the topic'." },
+                { title: "Articles (A/An/The)", desc: "Use 'an' before vowel sounds, 'a' before consonant sounds, and 'the' for specific references." }
+            ],
+            zh: [
+                { title: "Word Order (SVO & Time-When)", desc: "Chinese basic structure: Subject + Time + Location + Verb + Object. E.g., 我明天在学校看书 (I read at school tomorrow)." },
+                { title: "Measure Words (量词 - Liàngcí)", desc: "Must use appropriate measure words with nouns. E.g., 一个人 (yī gè rén), 一本书 (yī běn shū)." },
+                { title: "Particle 了 (le) Usage", desc: "Indicates completed action or change of state. Place correctly after verb or sentence end." }
+            ]
+        };
+
+        /* ================= STATE MANAGEMENT ================= */
+        let state = {
+            isListening: false,
+            language: 'bn-BD',
+            persona: 'professor',
+            voice: 'Kore',
+            grammarCorrection: true,
+            miningActive: false,
+            totalSatoshis: 0,
+            miningInterval: null,
+            transcriptHistory: [],
+            recognition: null,
+            synthesis: window.speechSynthesis
+        };
+
+        // Satoshis to BTC Conversion Ratio
+        const SAT_TO_BTC = 0.00000001;
+
+        /* ================= INITIALIZATION ================= */
+        window.onload = () => {
+            renderCorpus('bn');
+            initSpeechRecognition();
+            initVisualizer();
+            updateSystemPrompt();
+        };
+
+        /* ================= TAB NAVIGATION ================= */
+        function switchTab(tabId) {
+            ['studio', 'corpus', 'history', 'mining'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-2";
+            });
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`view-${tabId}`).classList.add('flex');
+            document.getElementById(`tab-${tabId}`).className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-800 text-cyan-400 flex items-center gap-2";
+        }
+
+        /* ================= RENDER CORPUS ================= */
+        function renderCorpus(langKey) {
+            const container = document.getElementById('corpus-content');
+            container.innerHTML = '';
+            GRAMMAR_CORPUS[langKey].forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 rounded-xl p-4 hover:border-cyan-500/40 transition";
+                card.innerHTML = `
+                    <h3 class="font-bold text-cyan-400 text-sm mb-1">${item.title}</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">${item.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        /* ================= SPEECH RECOGNITION & SYNTHESIS ================= */
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                state.recognition = new SpeechRecognition();
+                state.recognition.continuous = true;
+                state.recognition.interimResults = true;
+
+                state.recognition.onresult = (event) => {
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    const currentText = finalTranscript || interimTranscript;
+                    if (currentText.trim()) {
+                        updateSubtitle(`ইউজার: ${currentText}`, 'user');
+                        if (finalTranscript.trim()) {
+                            processUserSpeech(finalTranscript.trim());
+                        }
+                    }
+                };
+
+                state.recognition.onerror = (event) => {
+                    console.error("Speech Recognition Error:", event.error);
+                };
+
+                state.recognition.onend = () => {
+                    if (state.isListening) {
+                        state.recognition.start();
+                    }
+                };
+            } else {
+                showToast("ব্রাউজারে স্পিচ রিকগনিশন সাপোর্ট করে না। টেক্সট মোড সিমুলেশন ব্যবহার হবে।");
+            }
+        }
+
+        function updateSystemPrompt() {
+            state.language = document.getElementById('select-language').value;
+            state.persona = document.getElementById('select-persona').value;
+
+            const personaMap = {
+                professor: { title: "কঠোর গ্রামার প্রফেসর", desc: "আপনার ব্যাকরণ সঠিক হচ্ছে কিনা তা পর্যবেক্ষণ করা হচ্ছে...", icon: "fa-graduation-cap" },
+                friend: { title: "বান্ধব বহুভাষী বন্ধু", desc: "সহজ ও সাবলীল অডিও আড্ডা ও অনুশীলন...", icon: "fa-user-group" },
+                interviewer: { title: "কর্পোরেট ইন্টারভিউয়ার", desc: "পেশাদার ভয়েস ইন্টারভিউ এবং দক্ষতা পরীক্ষা...", icon: "fa-briefcase" },
+                storyteller: { title: "লোকগাথা গল্পকার", desc: "গল্প বলার সাথে সাথে ভাষা শিক্ষা...", icon: "fa-book-atlas" }
+            };
+
+            const info = personaMap[state.persona];
+            document.getElementById('persona-title').innerText = info.title;
+            document.getElementById('persona-desc').innerText = info.desc;
+            document.getElementById('persona-icon').innerHTML = `<i class="fa-solid ${info.icon}"></i>`;
+            document.getElementById('current-lang-tag').innerText = state.language;
+
+            if (state.recognition) {
+                state.recognition.lang = state.language;
+            }
+        }
+
+        /* ================= AUDIO TOGGLE ================= */
+        function toggleAudioSession() {
+            state.isListening = !state.isListening;
+
+            const btn = document.getElementById('btn-toggle-mic');
+            const icon = document.getElementById('mic-icon');
+            const aura = document.getElementById('visualizer-aura');
+            const badge = document.getElementById('speech-badge');
+
+            if (state.isListening) {
+                btn.className = "absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 text-slate-950 font-bold text-3xl flex items-center justify-center shadow-xl pulse-ring transition-all duration-300";
+                icon.className = "fa-solid fa-microphone";
+                aura.classList.add('border-emerald-400/50', 'neon-glow');
+                badge.className = "px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> মাইক্রোফোন সক্রিয়`;
+
+                if (state.recognition) {
+                    try {
+                        state.recognition.lang = state.language;
+                        state.recognition.start();
+                    } catch (e) {}
+                }
+
+                startMiningSim();
+                showToast("ভয়েস সেশন চালু হয়েছে!");
+            } else {
+                btn.className = "absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-cyan-500 to-emerald-500 text-slate-950 font-bold text-3xl flex items-center justify-center shadow-xl transition-all duration-300";
+                icon.className = "fa-solid fa-microphone";
+                aura.classList.remove('border-emerald-400/50', 'neon-glow');
+                badge.className = "px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-400 flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-500"></span> মাইক্রোফোন নিষ্ক্রিয়`;
+
+                if (state.recognition) {
+                    state.recognition.stop();
+                }
+
+                stopMiningSim();
+                showToast("ভয়েস সেশন বন্ধ করা হয়েছে।");
+            }
+        }
+
+        /* ================= PROCESS USER SPEECH & AI RESPONSE ================= */
+        async function processUserSpeech(userSpeech) {
+            // Build AI simulated response with grammar check
+            let grammarCorrectionText = "";
+            let aiResponseText = "";
+
+            if (state.language.startsWith('bn')) {
+                grammarCorrectionText = "ব্যাকরণ পর্যবেক্ষণ: চমৎকার বাক্য প্রকাশ!";
+                aiResponseText = `ধন্যবাদ। আপনি বলেছেন: "${userSpeech}"। ধ্বনি এআই হিসেবে আমি আপনার কথা অনুধাবন করেছি।`;
+            } else if (state.language.startsWith('en')) {
+                grammarCorrectionText = "Grammar Audit: Good sentence structure!";
+                aiResponseText = `Thank you. You said: "${userSpeech}". As your tutor, I recommend maintaining a steady pace.`;
+            } else if (state.language.startsWith('zh')) {
+                grammarCorrectionText = "语法检查：发音与句型正确！";
+                aiResponseText = `谢谢，你说的是："${userSpeech}"。请继续练习。`;
+            } else {
+                grammarCorrectionText = "व्याकरण ऑडिट: वाक्य संरचना सही है!";
+                aiResponseText = `धन्यवाद! आपने कहा: "${userSpeech}"।`;
+            }
+
+            // Display Subtitles
+            updateSubtitle(`ধ্বনি এআই: ${aiResponseText}`, 'ai');
+
+            // Speech Synthesis AI Spoken Response
+            speakText(aiResponseText);
+
+            // Log transcript history
+            logTranscript(userSpeech, aiResponseText, grammarCorrectionText);
+        }
+
+        function speakText(text) {
+            if (state.synthesis) {
+                state.synthesis.cancel(); // Clear previous speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = state.language;
+                state.synthesis.speak(utterance);
+            }
+        }
+
+        function updateSubtitle(text, sender) {
+            const box = document.getElementById('subtitle-box');
+            box.innerText = text;
+            if (sender === 'user') {
+                box.className = "text-sm sm:text-base text-cyan-300 font-medium italic min-h-[1.5rem]";
+            } else {
+                box.className = "text-sm sm:text-base text-emerald-300 font-medium italic min-h-[1.5rem]";
+            }
+        }
+
+        /* ================= TRANSCRIPT HISTORY ================= */
+        function logTranscript(userText, aiText, grammarNote) {
+            const entry = {
+                timestamp: new Date().toLocaleTimeString(),
+                user: userText,
+                ai: aiText,
+                grammar: grammarNote
+            };
+            state.transcriptHistory.unshift(entry);
+
+            const container = document.getElementById('transcript-history-list');
+            if (state.transcriptHistory.length === 1) {
+                container.innerHTML = '';
+            }
+
+            const card = document.createElement('div');
+            card.className = "bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2";
+            card.innerHTML = `
+                <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
+                    <span><i class="fa-regular fa-clock"></i> ${entry.timestamp}</span>
+                    <span class="text-cyan-400 font-semibold">${state.language}</span>
+                </div>
+                <div class="text-xs text-cyan-300"><strong>ইউজার:</strong> ${entry.user}</div>
+                <div class="text-xs text-emerald-300"><strong>ধ্বনি এআই:</strong> ${entry.ai}</div>
+                <div class="text-[11px] text-amber-400 bg-amber-500/10 p-2 rounded-lg mt-1 border border-amber-500/20">
+                    <i class="fa-solid fa-spell-check"></i> ${entry.grammar}
+                </div>
+            `;
+            container.prepend(card);
+        }
+
+        function exportTranscript() {
+            if (state.transcriptHistory.length === 0) {
+                showToast("ডাউনলোড করার মত কোনো ট্রান্সক্রিপ্ট নেই।");
+                return;
+            }
+            let content = "=== ধ্বনি এ আই (Dhwani AI) কথোপকথন ইতিহাস ===\n\n";
+            state.transcriptHistory.forEach((t, index) => {
+                content += `[${index + 1}] সময়: ${t.timestamp}\nইউজার: ${t.user}\nধ্বনি এআই: ${t.ai}\nনোট: ${t.grammar}\n-----------------------------------\n`;
+            });
+
+            const element = document.createElement('a');
+            const file = new Blob([content], { type: 'text/plain' });
+            element.href = URL.createObjectURL(file);
+            element.download = `dhwani_ai_transcript_${Date.now()}.txt`;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            showToast("ট্রান্সক্রিপ্ট ডাউনলোড সম্পূর্ণ হয়েছে!");
+        }
+
+        /* ================= BTC MINING SIMULATION ================= */
+        function startMiningSim() {
+            if (state.miningActive) return;
+            state.miningActive = true;
+            
+            state.miningInterval = setInterval(() => {
+                // Generate 15-45 satoshis per tick during active usage
+                const generated = Math.floor(Math.random() * 30) + 15;
+                state.totalSatoshis += generated;
+                updateMiningUI();
+
+                // Append runtime log
+                const logBox = document.getElementById('mining-logs');
+                const log = document.createElement('div');
+                log.className = "text-slate-400";
+                log.innerText = `[BTC BLOCK ${Date.now()}] +${generated} Satoshis Mined | DataCenter (90%): ${(generated*0.9).toFixed(0)} Sats | User Commission (10%): ${(generated*0.1).toFixed(0)} Sats`;
+                logBox.appendChild(log);
+                logBox.scrollTop = logBox.scrollHeight;
+
+            }, 2000);
+        }
+
+        function stopMiningSim() {
+            state.miningActive = false;
+            if (state.miningInterval) {
+                clearInterval(state.miningInterval);
+            }
+        }
+
+        function updateMiningUI() {
+            const totalBtc = (state.totalSatoshis * SAT_TO_BTC).toFixed(8);
+            const datacenterBtc = ((state.totalSatoshis * 0.9) * SAT_TO_BTC).toFixed(8);
+            const userBtc = ((state.totalSatoshis * 0.1) * SAT_TO_BTC).toFixed(8);
+
+            document.getElementById('dash-btc-total').innerText = `${totalBtc} BTC`;
+            document.getElementById('dash-btc-datacenter').innerText = `${datacenterBtc} BTC`;
+            document.getElementById('dash-btc-user').innerText = `${userBtc} BTC`;
+            
+            document.getElementById('header-reward').innerText = `${userBtc} BTC`;
+            document.getElementById('side-user-payout').innerText = `${userBtc} BTC`;
+        }
+
+        function claimReward() {
+            const userBtc = ((state.totalSatoshis * 0.1) * SAT_TO_BTC).toFixed(8);
+            if (parseFloat(userBtc) <= 0) {
+                showToast("উইথড্র করার জন্য পর্যাপ্ত বিটকয়েন অর্জিত হয়নি।");
+                return;
+            }
+            showToast(`বুলিয়ান ওয়ালেটে ${userBtc} BTC ক্লেইম রিকোয়েস্ট সফল হয়েছে!`);
+        }
+
+        /* ================= AUDIO VISUALIZER CANVAS ================= */
+        function initVisualizer() {
+            const canvas = document.getElementById('waveform-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 250;
+            canvas.height = 250;
+
+            let angle = 0;
+
+            function drawWave() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = 95;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = state.isListening ? 'rgba(16, 185, 129, 0.4)' : 'rgba(0, 242, 254, 0.2)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                if (state.isListening) {
+                    const bars = 30;
+                    for (let i = 0; i < bars; i++) {
+                        const barAngle = (i * (Math.PI * 2 / bars)) + angle;
+                        const height = Math.sin(angle * 4 + i) * 15 + 10;
+                        const x1 = centerX + Math.cos(barAngle) * radius;
+                        const y1 = centerY + Math.sin(barAngle) * radius;
+                        const x2 = centerX + Math.cos(barAngle) * (radius + height);
+                        const y2 = centerY + Math.sin(barAngle) * (radius + height);
+
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.strokeStyle = '#10b981';
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = 'round';
+                        ctx.stroke();
+                    }
+                    angle += 0.05;
+                }
+                ctx.restore();
+                requestAnimationFrame(drawWave);
+            }
+            drawWave();
+        }
+
+        /* ================= UTILITY TOAST ================= */
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
