@@ -1,6 +1,6 @@
 Here is a direct link of Dhowni AI.
 
-https://cerulean-fenglisu-e2e1cd.netlify.app/
+https://hds-vtf3sb6zwst6-6014-3dzuf.grok-code-wild.hades-www.grok-sandbox.com/
 
 This is a RAG-based software. 
 
