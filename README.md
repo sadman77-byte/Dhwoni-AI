@@ -21,7 +21,7 @@ Pronunciation / Phoneme Evaluation
 RAG Knowledge Check
 
       ↓
-Indirect Feedback Generation
+Inductive Feedback Generation
 
       ↓
 Conversation Memory
