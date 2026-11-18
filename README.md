@@ -1,6 +1,6 @@
 Here is a direct link of Dhowni AI.
 
-https://genuine-kheer-f4487b.netlify.app/
+https://cerulean-fenglisu-e2e1cd.netlify.app/
 
 This is a RAG-based software. 
 
