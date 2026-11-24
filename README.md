@@ -1,6 +1,6 @@
 Here is a direct link of Dhowni AI.
 
-https://neon-gumdrop-12dd9d.netlify.app/
+https://quiet-torrone-24f4c7.netlify.app/
 
 This is a RAG-based software. 
 
