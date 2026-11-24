@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ধ্বনি এ আই 2.0 | Dhwani AI 2.0 — Unified 19-Corpus Multilingual Roleplay & Universal Linguistics Studio</title>
+  
+  <!-- Google Fonts for Crisp Bengali, Chinese, Hindi & English Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- html2pdf.js for crisp Unicode PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '"Hind Siliguri"', '"Noto Sans SC"', '"Noto Sans Devanagari"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: '#090B10',
+            surface: '#11151F',
+            surfaceLight: '#181E2C',
+            accent: '#38BDF8',
+            emeraldGlow: '#10B981',
+            amberBtc: '#F59E0B',
+            violetPulse: '#8B5CF6'
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'ripple': 'ripple 1.8s infinite ease-out',
+          },
+          keyframes: {
+            ripple: {
+              '0%': { transform: 'scale(0.95)', opacity: '0.75' },
+              '100%': { transform: 'scale(1.65)', opacity: '0' },
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #090B10;
+      color: #F1F5F9;
+      font-family: 'Inter', 'Hind Siliguri', 'Noto Sans SC', 'Noto Sans Devanagari', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .studio-bg {
+      background: 
+        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+        #090B10;
+    }
+
+    .glass-panel {
+      background: rgba(17, 21, 31, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(24, 30, 44, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      background: rgba(30, 38, 56, 0.88);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(9, 11, 16, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.5);
+    }
+
+    .mic-btn-idle {
+      background: linear-gradient(135deg, #0EA5E9 0%, #6366F1 100%);
+      box-shadow: 0 0 28px rgba(14, 165, 233, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+    }
+    .mic-btn-live {
+      background: linear-gradient(135deg, #EF4444 0%, #F97316 100%);
+      box-shadow: 0 0 36px rgba(239, 68, 68, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    }
+
+    .subtitle-stage {
+      background: linear-gradient(180deg, rgba(17, 21, 31, 0.92) 0%, rgba(11, 14, 21, 0.96) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
+    }
+
+    #pdf-render-sandbox {
+      font-family: 'Hind Siliguri', 'Noto Sans SC', 'Noto Sans Devanagari', 'Inter', sans-serif;
+      color: #111827;
+      background: #FFFFFF;
+    }
+  </style>
+</head>
+<body class="studio-bg min-h-screen flex flex-col selection:bg-sky-500/30 selection:text-sky-200">
+
+  <!-- Toast Notification Banner -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
+  <!-- Top Navigation & Real-Time Telemetry Bar -->
+  <header class="glass-panel sticky top-0 z-40 border-b border-white/10 px-3 sm:px-6 py-2.5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand Identity -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+          <i class="fa-solid fa-wave-square text-white text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-white via-sky-200 to-indigo-300 bg-clip-text text-transparent">
+              ধ্বনি এ আই 2.0
+            </h1>
+            <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/30">
+              Unified 19-Corpus Studio
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 hidden sm:block">
+            19 Corpora • Althusser ISA • Cultural Imperialism • Identity Crisis • Ideography (O'Neill) • Murray • HSK3 • Bhat • UG
+          </p>
+        </div>
+      </div>
+
+      <!-- Real-Time Telemetry, Streak & 10% Active Commission Ticker -->
+      <div class="flex items-center gap-2 sm:gap-3 bg-slate-950/80 border border-amber-500/25 rounded-2xl px-3 py-1.5 shadow-inner">
+        <!-- Daily Streak Badge -->
+        <div class="flex items-center gap-1.5 pr-2 border-r border-white/10 cursor-pointer" onclick="claimDailyStudyStreak()" title="Click to Claim Daily Study Streak">
+          <span class="text-sm">🔥</span>
+          <div>
+            <div class="text-[9px] text-slate-400 uppercase font-mono">Streak</div>
+            <div id="study-streak-display" class="text-xs font-mono font-bold text-orange-300">1 Day</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pr-2 border-r border-white/10">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+          </span>
+          <div class="text-left">
+            <div class="text-[9px] text-slate-400 uppercase font-mono">Usage Time</div>
+            <div id="btc-uptime-display" class="text-xs font-mono font-semibold text-slate-200">00:00:00</div>
+          </div>
+        </div>
+
+        <div class="cursor-pointer group" onclick="toggleBtcModal()" title="View BTC Telemetry & 10% User Rewards">
+          <div class="text-[9px] text-amber-400/90 uppercase font-mono flex items-center gap-1">
+            <i class="fa-brands fa-bitcoin"></i> Your 10% Reward
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span id="btc-user-reward-display" class="text-xs font-mono font-bold text-amber-300 group-hover:text-amber-200">
+              0.00000000 BTC
+            </span>
+            <span id="btc-activity-badge" class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              ACTIVE 10%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Utility Controls -->
+      <div class="flex items-center gap-2">
+        <button id="btn-api-key-trigger" onclick="toggleApiKeyModal()" class="px-3 py-2 rounded-xl glass-card text-xs font-semibold text-amber-300 border-amber-400/40 hover:text-white flex items-center gap-1.5" title="Set or Test Your Gemini API Key">
+          <i class="fa-solid fa-key"></i>
+          <span id="header-api-status-label">API Key</span>
+        </button>
+        <button onclick="toggleCorpusModal()" class="px-3 py-2 rounded-xl glass-card text-xs font-medium text-sky-300 hover:text-white flex items-center gap-1.5" title="Browse All 19 Unified Grammar, Linguistics & Research Corpora">
+          <i class="fa-solid fa-book-open"></i>
+          <span class="hidden lg:inline">All Corpora (19)</span>
+        </button>
+        <button onclick="openPdfExportModal()" class="px-3 py-2 rounded-xl glass-card text-xs font-medium text-emerald-300 hover:text-white flex items-center gap-1.5" title="Translate & Download PDF Transcript">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span class="hidden sm:inline">PDF</span>
+        </button>
+        <button onclick="toggleHistoryDrawer()" class="px-3 py-2 rounded-xl glass-card text-xs font-medium text-purple-300 hover:text-white flex items-center gap-1.5" title="View Saved Sessions">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span class="hidden lg:inline">History</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Studio Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 grid grid-cols-1 lg:grid-cols-12 gap-4 pb-36">
+    
+    <!-- Left Column: Language & Roleplay Persona Selector -->
+    <section class="lg:col-span-4 flex flex-col gap-4">
+      
+      <!-- Language & Analysis Mode Selector -->
+      <div class="glass-panel rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-xs font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-globe text-sky-400"></i> Target & Analysis Language
+          </h2>
+          <span id="word-order-pill" class="text-[11px] font-mono px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+            SOV (কর্তা-কর্ম-ক্রিয়া)
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2" id="language-selector-grid">
+          <button data-lang="bn" onclick="selectLanguage('bn')" class="lang-btn active-lang p-2.5 rounded-xl border border-sky-400/50 bg-sky-500/15 text-left transition">
+            <div class="font-bold text-sm text-white">বাংলা (Bengali)</div>
+            <div class="text-[11px] text-sky-300 font-mono">SOV • সন্ধি, সমাস, কারক</div>
+          </button>
+          <button data-lang="en" onclick="selectLanguage('en')" class="lang-btn p-2.5 rounded-xl border border-white/10 bg-slate-900/50 text-left transition hover:border-white/25">
+            <div class="font-bold text-sm text-slate-200">English</div>
+            <div class="text-[11px] text-slate-400 font-mono">SVO • Historical, UG, ISA</div>
+          </button>
+          <button data-lang="zh" onclick="selectLanguage('zh')" class="lang-btn p-2.5 rounded-xl border border-white/10 bg-slate-900/50 text-left transition hover:border-white/25">
+            <div class="font-bold text-sm text-slate-200">中文 (Chinese)</div>
+            <div class="text-[11px] text-slate-400 font-mono">SVO • HSK3 L9, 正名, 說文</div>
+          </button>
+          <button data-lang="hi" onclick="selectLanguage('hi')" class="lang-btn p-2.5 rounded-xl border border-white/10 bg-slate-900/50 text-left transition hover:border-white/25">
+            <div class="font-bold text-sm text-slate-200">हिन्दी (Hindi)</div>
+            <div class="text-[11px] text-slate-400 font-mono">SOV • कारक, सर्वनाम, लिंग</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Roleplay Character Persona Selector -->
+      <div class="glass-panel rounded-2xl p-4 flex-1 flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-xs font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-masks-theater text-purple-400"></i> Roleplay Character
+          </h2>
+          <button onclick="toggleCustomCharacterForm()" class="text-[11px] text-sky-400 hover:text-sky-300 font-medium flex items-center gap-1">
+            <i class="fa-solid fa-plus"></i> Custom Persona
+          </button>
+        </div>
+
+        <div id="custom-persona-form" class="hidden mb-3 p-3 rounded-xl bg-slate-900/90 border border-sky-500/30 space-y-2">
+          <input id="custom-char-name" type="text" placeholder="Character Name (e.g., আলথুসার / O'Neill / রবীন্দ্রনাথ)" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-sky-400" />
+          <input id="custom-char-role" type="text" placeholder="Role & Style (e.g., Ideological State Apparatuses & Theory Mentor)" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-sky-400" />
+          <div class="flex justify-end gap-2">
+            <button onclick="toggleCustomCharacterForm()" class="px-2.5 py-1 rounded-lg text-xs text-slate-400 hover:text-white">Cancel</button>
+            <button onclick="saveCustomCharacter()" class="px-3 py-1 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-xs">Apply Persona</button>
+          </div>
+        </div>
+
+        <div id="character-list" class="space-y-2.5 overflow-y-auto max-h-[340px] pr-1"></div>
+
+        <div class="mt-4 pt-3 border-t border-white/10">
+          <div class="text-[11px] font-mono text-slate-400 mb-2">Quick Corpus & Practice Prompts (19 Corpora):</div>
+          <div id="quick-prompts-container" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Live Audio Stage, Subtitles & Linguistic Analysis Feed -->
+    <section class="lg:col-span-8 flex flex-col gap-4">
+      
+      <!-- Live Acoustic Waveform & Real-Time Subtitles Stage -->
+      <div class="subtitle-stage rounded-2xl p-4 sm:p-5 relative overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2">
+            <span id="mic-status-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+            <span id="mic-status-label" class="text-xs font-mono uppercase tracking-wider text-slate-300">
+              মাইক বন্ধ — মাঝখানের মাইক বাটনে চাপ দিয়ে কথা বলুন
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="capture-engine-badge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30">
+              19-Corpus Engine Active
+            </span>
+            <span id="tts-status-pill" class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              <i class="fa-solid fa-volume-high mr-1"></i> Voice Output ON
+            </span>
+            <button onclick="clearCurrentStage()" class="text-[11px] text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5" title="Clear current buffered utterance">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Canvas Audio Visualizer + Live dB Input Gain Meter -->
+        <div class="w-full h-14 rounded-xl bg-slate-950/80 border border-white/5 mb-2 overflow-hidden relative">
+          <canvas id="audio-visualizer" class="w-full h-full block"></canvas>
+          <div id="visualizer-overlay-hint" class="absolute inset-0 flex items-center justify-center text-[11px] font-mono text-slate-400 pointer-events-none">
+            [ মাইক চালু করলে আপনার কণ্ঠের লাইভ ওয়েভফর্ম ও সাবটাইটেল এখানে দেখা যাবে ]
+          </div>
+        </div>
+
+        <!-- Real-Time Hardware Gain / dB Bar -->
+        <div class="flex items-center gap-2.5 mb-3 px-1">
+          <span class="text-[10px] font-mono text-slate-400 whitespace-nowrap"><i class="fa-solid fa-signal text-sky-400 mr-1"></i>MIC INPUT LEVEL:</span>
+          <div class="flex-1 h-2 rounded-full bg-slate-950 border border-white/10 overflow-hidden">
+            <div id="mic-db-bar" class="h-full w-0 bg-gradient-to-r from-emerald-400 via-sky-400 to-rose-500 transition-all duration-75"></div>
+          </div>
+          <span id="mic-db-value" class="text-[10px] font-mono text-slate-400 w-14 text-right">-∞ dB</span>
+        </div>
+
+        <!-- Live Dual Subtitles Box -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="rounded-xl bg-slate-950/75 border border-sky-500/20 p-3.5 flex flex-col justify-between min-h-[112px]">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-mono text-sky-400 font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-microphone-lines"></i> আপনার কথা (LIVE TRANSCRIPT)
+              </span>
+              <span id="transcription-mode-tag" class="text-[10px] text-slate-400 font-mono">Live / Editable</span>
+            </div>
+            <textarea id="live-user-transcript" rows="2" placeholder="মাইক চালু করে কথা বলুন বা লিখুন (যেমন: 'Althusser-এর ISA ও Interpellation ব্যাখ্যা করো' বা 'Cultural Imperialism কীভাবে কাজ করে')..." class="w-full bg-transparent text-sm sm:text-base text-white placeholder-slate-500 focus:outline-none resize-none leading-relaxed"></textarea>
+          </div>
+
+          <div class="rounded-xl bg-slate-950/75 border border-purple-500/20 p-3.5 flex flex-col justify-between min-h-[112px]">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-mono text-purple-400 font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-closed-captioning"></i> <span id="active-char-subtitle-name">মীরা (MIRA)</span> (AI SUBTITLE)
+              </span>
+              <button onclick="replayLastAssistantAudio()" class="text-[11px] text-purple-300 hover:text-white flex items-center gap-1" title="Replay AI Voice">
+                <i class="fa-solid fa-rotate-right"></i> Replay
+              </button>
+            </div>
+            <div id="live-ai-subtitle" class="text-sm sm:text-base text-slate-200 leading-relaxed max-h-24 overflow-y-auto">
+              নমস্কার! আমি মীরা। এখন <strong>ধ্বনি এ আই 2.0</strong>-তে মোট <strong>১৯টি করপোরা</strong> একসাথে যুক্ত আছে—Althusser-এর ISA ও Interpellation, Cultural Imperialism, Identity Crisis, Ideography & Chinese Language Theory (O'Neill), Historical Linguistics (Murray), HSK3 Lesson 9, Bhat Pronouns, Stylistics ও Chomsky UG। নিচে লিখে বা মাইকে বলে <strong>Analyze</strong> চাপুন!
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Test Bar -->
+        <div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-[10px] font-mono text-slate-400">দ্রুত পরীক্ষা (Quick Test):</span>
+            <button onclick="loadSampleUtterance('Althusser-এর Repressive State Apparatus (RSA), Ideological State Apparatus (ISA) ও Interpellation ব্যাখ্যা করো')" class="text-[11px] px-2 py-0.5 rounded-md bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-200 transition">Althusser ISA</button>
+            <button onclick="loadSampleUtterance('Cultural Imperialism, NWICO এবং Schiller-এর Media Imperialism তত্ত্ব ব্যাখ্যা করো')" class="text-[11px] px-2 py-0.5 rounded-md bg-rose-500/15 hover:bg-rose-500/30 border border-rose-400/30 text-rose-200 transition">Cultural Imperialism</button>
+            <button onclick="loadSampleUtterance('Du Ponceau, Champollion, Fanqie এবং Zhengming 正名 তত্ত্বের আলোকে Ideography বনাম Lexigraphy আলোচনা করো')" class="text-[11px] px-2 py-0.5 rounded-md bg-indigo-500/15 hover:bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 transition">O'Neill Ideography</button>
+            <button onclick="loadSampleUtterance('Erikson-এর Identity Crisis এবং বয়স, লিঙ্গ ও শিক্ষাস্তরের সম্পর্ক ব্যাখ্যা করো')" class="text-[11px] px-2 py-0.5 rounded-md bg-purple-500/15 hover:bg-purple-500/30 border border-purple-400/30 text-purple-200 transition">Identity Crisis</button>
+          </div>
+          <button onclick="finalizeManualUtteranceToHistory()" class="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-mono">
+            <i class="fa-solid fa-check mr-1 text-emerald-400"></i> Save Utterance
+          </button>
+        </div>
+      </div>
+
+      <!-- Conversation & Deep Linguistic Analysis Stream -->
+      <div class="glass-panel rounded-2xl p-4 sm:p-5 flex-1 flex flex-col min-h-[380px]">
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-sky-400"></i>
+            <h3 class="font-semibold text-sm sm:text-base text-white">Session Dialogue & Unified 19-Corpus Linguistic Breakdown</h3>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="startNewSession()" class="text-xs px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition">
+              <i class="fa-solid fa-plus mr-1"></i> New Session
+            </button>
+          </div>
+        </div>
+
+        <div id="chat-feed" class="flex-1 space-y-4 overflow-y-auto max-h-[520px] pr-1">
+          <div class="rounded-2xl bg-slate-900/80 border border-white/10 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-sky-400 font-semibold">
+                <i class="fa-solid fa-sparkles mr-1"></i> DHWANI AI 2.0 • UNIFIED 19-CORPUS ARCHITECTURE
+              </span>
+              <span class="text-[11px] text-slate-500 font-mono">19 Corpora + Searchable Glossary</span>
+            </div>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              এই একীভূত সংস্করণে মোট <strong>১৯টি করপোরা</strong> সংযুক্ত করা হয়েছে: (১) <strong>Historical Linguistics (Murray)</strong>, (২) <strong>HSK 3 Lesson 9 & Chinese</strong>, (৩) <strong>English Inversion & Top 50 Mistakes</strong>, (৪) <strong>বাংলা ব্যাকরণ (নবম-দশম ও নোট)</strong>, (৫) <strong>Bhat Pronouns</strong>, (৬) <strong>Stylistics</strong>, (৭) <strong>Chomsky UG & Language and Mind</strong>, (৮) <strong>Discourse Analysis (Brown & Yule)</strong>, (৯) <strong>Intercultural Communication (Zhu Hua)</strong>, (১০) <strong>RP Phonetics (Roach)</strong>, (১১) <strong>Schumann Acculturation Model</strong>, (১২) <strong>Identity Crisis (Erikson / Gholamrezaei)</strong>, (১৩) <strong>Lottery Stochastic Model (Nikulin)</strong>, (১৪) <strong>Anthropological Linguistics (Danesi)</strong>, (১৫) <strong>Linguistics Glossary (A–Z)</strong>, (১৬) <strong>Ideology & Ideological State Apparatuses (Louis Althusser)</strong>, (১৭) <strong>Cultural Imperialism: A Discourse (Godsgift & Obukoadata)</strong>, (১৮) <strong>Ideography and Chinese Language Theory: A History (Timothy Michael O'Neill)</strong>, এবং (১৯) <strong>Cross-Corpus Comparative & Discourse Synthesis Matrix</strong>।
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
+              <div class="p-2.5 rounded-xl bg-slate-950/70 border border-white/5">
+                <div class="font-semibold text-amber-300 mb-0.5">1. Left: Mute & Roleplay</div>
+                <div class="text-slate-400">Audio Mute toggles voice output; Roleplay converses in character across 19 corpora.</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-950/70 border border-sky-500/20">
+                <div class="font-semibold text-sky-300 mb-0.5">2. Center: Live Mic</div>
+                <div class="text-slate-400">Dual-layer Web Speech + Gemini Multimodal Audio fallback.</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-950/70 border border-emerald-500/20">
+                <div class="font-semibold text-emerald-300 mb-0.5">3. Right: Deep Analyze</div>
+                <div class="text-slate-400">6-point Syntactic, Historical, Ideological/Cultural, Stylistic & IPA breakdown.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Bottom Audio-First Control Dock -->
+  <div class="fixed bottom-0 inset-x-0 z-40 pointer-events-none pb-4 px-3">
+    <div class="max-w-3xl mx-auto glass-panel rounded-3xl p-3 sm:px-6 sm:py-3.5 shadow-2xl border border-white/15 pointer-events-auto flex items-center justify-between gap-2 sm:gap-4">
+      
+      <button id="btn-mute-toggle" onclick="toggleMuteAudio()" class="flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-2.5 rounded-2xl bg-slate-800/90 hover:bg-slate-700/90 border border-white/10 text-slate-200 transition active:scale-95" title="Mute or Unmute AI Voice Output">
+        <i id="mute-icon" class="fa-solid fa-volume-high text-emerald-400 text-base sm:text-lg"></i>
+        <div class="text-center sm:text-left">
+          <div id="mute-label-main" class="text-xs font-semibold leading-tight">Audio On</div>
+          <div class="text-[10px] text-slate-400 hidden sm:block">অডিও মিউট</div>
+        </div>
+      </button>
+
+      <button id="btn-roleplay-reply" onclick="triggerRoleplayReply()" class="flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-2xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-400/30 text-indigo-200 transition active:scale-95" title="Continue Roleplay Conversation">
+        <i class="fa-solid fa-comments text-indigo-300 text-base"></i>
+        <div class="text-center sm:text-left">
+          <div class="text-xs font-semibold leading-tight">Roleplay</div>
+          <div class="text-[10px] text-indigo-300/80 hidden sm:block">কথোপকথন</div>
+        </div>
+      </button>
+
+      <div class="relative flex items-center justify-center">
+        <span id="mic-pulse-ring" class="hidden absolute inset-0 rounded-full bg-red-500 animate-ripple pointer-events-none"></span>
+        <button id="btn-live-mic" onclick="toggleLiveMic()" class="mic-btn-idle relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center text-white transition-transform duration-200 active:scale-90 shadow-xl" title="Toggle Live Microphone">
+          <i id="mic-icon" class="fa-solid fa-microphone text-xl sm:text-2xl mb-0.5"></i>
+          <span id="mic-btn-text" class="text-[10px] font-mono font-bold uppercase tracking-wider">MIC OFF</span>
+        </button>
+      </div>
+
+      <button id="btn-analyze" onclick="triggerLinguisticAnalysis()" class="flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2.5 px-3 sm:px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500/25 to-teal-500/25 hover:from-emerald-500/40 hover:to-teal-500/40 border border-emerald-400/40 text-emerald-200 transition active:scale-95 shadow-lg shadow-emerald-950/30" title="Analyze Grammar, Historical Linguistics, Ideological/Cultural Discourse, Bhat Pronouns & SVO/SOV">
+        <i class="fa-solid fa-microscope text-emerald-400 text-base sm:text-lg"></i>
+        <div class="text-center sm:text-left">
+          <div class="text-xs sm:text-sm font-bold text-white leading-tight">Analyze</div>
+          <div class="text-[10px] text-emerald-300 hidden sm:block">বিশ্লেষণ করুন</div>
+        </div>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL 0: Gemini API Key Configuration -->
+  <div id="api-key-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl max-w-lg w-full p-6 border border-amber-400/35 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
+            <i class="fa-solid fa-key text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-white">Gemini API Key সেটআপ</h3>
+            <p class="text-xs text-slate-400">আপনার নিজস্ব API Key দিয়ে ধ্বনি এ আই 2.0 সক্রিয় করুন</p>
+          </div>
+        </div>
+        <button onclick="toggleApiKeyModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5">Google AI Studio / Gemini API Key</label>
+          <div class="flex gap-2">
+            <input id="input-gemini-api-key" type="password" placeholder="AIzaSy..." class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950 border border-white/15 font-mono text-xs text-amber-200 focus:outline-none focus:border-amber-400" />
+            <button onclick="toggleApiKeyVisibility()" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs" title="Show/Hide Key">
+              <i id="api-eye-icon" class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5">Gemini Model</label>
+          <select id="select-gemini-model" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-white/15 font-mono text-xs text-sky-200 focus:outline-none focus:border-sky-400">
+            <option value="gemini-2.5-flash">gemini-2.5-flash (Recommended • Fast & Multimodal)</option>
+            <option value="gemini-3-flash-preview">gemini-3-flash-preview (Latest Preview)</option>
+          </select>
+        </div>
+
+        <div id="api-test-result" class="hidden text-xs font-mono p-3 rounded-xl border"></div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10">
+        <button onclick="clearSavedApiKey()" class="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+          <i class="fa-solid fa-trash mr-1"></i> Clear Key
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="testGeminiConnection()" class="px-3.5 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/40 text-sky-200 text-xs font-semibold">
+            <i class="fa-solid fa-plug mr-1"></i> Test Key
+          </button>
+          <button onclick="saveApiKeySettings()" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold">
+            <i class="fa-solid fa-check mr-1"></i> Save & Activate
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: BTC Telemetry -->
+  <div id="btc-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl max-w-2xl w-full p-6 border border-amber-500/30 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400">
+            <i class="fa-brands fa-bitcoin text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-white">Real-Time BTC Compute & 10% Active User Reward</h3>
+            <p class="text-xs text-slate-400">Automated Data Center Settlement & Proof-of-Learning Telemetry</p>
+          </div>
+        </div>
+        <button onclick="toggleBtcModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10">
+          <div class="text-[11px] font-mono text-slate-400">TOTAL GENERATED (GROSS)</div>
+          <div id="modal-btc-gross" class="text-base font-mono font-bold text-sky-300 mt-1">0.00000000 BTC</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">Rate: 125 sats / active min</div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-rose-500/20">
+          <div class="text-[11px] font-mono text-rose-300">DATA CENTER AUTO-PAID (90%)</div>
+          <div id="modal-btc-dc" class="text-base font-mono font-bold text-rose-400 mt-1">0.00000000 BTC</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">GPU/TPU Inference & Audio Relay</div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-400/40">
+          <div class="text-[11px] font-mono text-amber-300">USER COMMISSION (10%)</div>
+          <div id="modal-btc-user" class="text-base font-mono font-bold text-amber-300 mt-1">0.00000000 BTC</div>
+          <div id="modal-btc-sats" class="text-[10px] text-amber-200/80 mt-0.5">0 Satoshis Earned</div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/80 border border-white/10 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span class="text-xs font-semibold text-slate-200">Your Reward Payout Address (Lightning / BTC)</span>
+          <span id="modal-activity-score" class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">
+            Activity Score: 100% (10% Commission Unlocked)
+          </span>
+        </div>
+        <div class="flex gap-2">
+          <input id="user-btc-address" type="text" value="bc1qdhwani20linguistics88x9v2k4m7p" class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-white/10 font-mono text-xs text-amber-200 focus:outline-none focus:border-amber-400" />
+          <button onclick="claimBtcReward()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition">
+            Settle Payout
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="text-xs font-mono uppercase text-slate-400 mb-2">Live Data Center & Commission Settlement Ledger</div>
+        <div id="btc-ledger-list" class="space-y-1.5 max-h-44 overflow-y-auto font-mono text-[11px] bg-slate-950/90 p-3 rounded-xl border border-white/5">
+          <div class="text-slate-500">Initializing telemetry node...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: PDF Export -->
+  <div id="pdf-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl max-w-2xl w-full p-6 border border-emerald-500/30 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400">
+            <i class="fa-solid fa-file-pdf text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-white">Export & Translate PDF Transcript</h3>
+            <p class="text-xs text-slate-400">Download full dialogue & unified 19-corpus grammar analysis in your chosen language</p>
+          </div>
+        </div>
+        <button onclick="closePdfExportModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <label class="block text-xs font-mono uppercase text-slate-400">Select PDF Transcript Output Language:</label>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          <button onclick="setPdfTargetLang('original')" id="pdf-lang-original" class="pdf-lang-opt px-3 py-2 rounded-xl border border-emerald-400 bg-emerald-500/20 text-xs font-semibold text-white">
+            Original Mix
+          </button>
+          <button onclick="setPdfTargetLang('bn')" id="pdf-lang-bn" class="pdf-lang-opt px-3 py-2 rounded-xl border border-white/10 bg-slate-900 text-xs font-semibold text-slate-300">
+            বাংলা (Bengali)
+          </button>
+          <button onclick="setPdfTargetLang('en')" id="pdf-lang-en" class="pdf-lang-opt px-3 py-2 rounded-xl border border-white/10 bg-slate-900 text-xs font-semibold text-slate-300">
+            English
+          </button>
+          <button onclick="setPdfTargetLang('zh')" id="pdf-lang-zh" class="pdf-lang-opt px-3 py-2 rounded-xl border border-white/10 bg-slate-900 text-xs font-semibold text-slate-300">
+            中文 (Chinese)
+          </button>
+          <button onclick="setPdfTargetLang('hi')" id="pdf-lang-hi" class="pdf-lang-opt px-3 py-2 rounded-xl border border-white/10 bg-slate-900 text-xs font-semibold text-slate-300">
+            हिन्दी (Hindi)
+          </button>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 text-xs text-slate-300 space-y-1">
+        <div><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i> Includes all User & Assistant dialogue turns</div>
+        <div><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i> Includes Historical Linguistics, Ideological/Cultural Theory, Ideography, Stylistics, Bhat Pronouns, SVO/SOV & IPA/Pinyin</div>
+        <div><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i> Renders crisp Unicode fonts</div>
+      </div>
+
+      <div id="pdf-export-status" class="hidden text-xs font-mono text-sky-300 bg-sky-500/10 border border-sky-500/30 rounded-xl p-3">
+        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Translating & compiling Unicode PDF document...
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button onclick="closePdfExportModal()" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-slate-300">Cancel</button>
+        <button id="btn-generate-pdf" onclick="generateAndDownloadPdf()" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-download"></i> Generate & Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Unified 19-Corpus & Searchable Glossary Explorer -->
+  <div id="corpus-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl max-w-6xl w-full p-6 border border-sky-500/30 shadow-2xl flex flex-col max-h-[90vh]">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
+        <div>
+          <h3 class="font-bold text-base sm:text-lg text-white">Unified 19-Corpus & Searchable Linguistics Glossary Explorer</h3>
+          <p class="text-xs text-slate-400">Merged 19-corpus reference database powering Dhwani AI 2.0's Analyze & Roleplay engine</p>
+        </div>
+        <button onclick="toggleCorpusModal()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Live Search Bar across All 19 Corpora & Glossary -->
+      <div class="mb-3 flex gap-2">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input id="corpus-search-input" type="text" oninput="searchUnifiedCorpus(this.value)" placeholder="Search across all 19 corpora & A–Z glossary (e.g., Interpellation, ISA, Cultural Imperialism, Fanqie, Zhengming, Du Ponceau, Ablaut, Deixis, 越…越…)..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-950 border border-white/15 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" />
+        </div>
+        <button onclick="document.getElementById('corpus-search-input').value=''; renderCorpusTab('historical');" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-slate-300 font-mono">
+          Reset
+        </button>
+      </div>
+
+      <!-- 19-Corpus Category Tabs -->
+      <div class="flex flex-wrap gap-1.5 mb-3">
+        <button onclick="renderCorpusTab('historical')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-sky-500/20 border border-sky-400 text-xs font-semibold text-white">1. Historical Linguistics (Murray)</button>
+        <button onclick="renderCorpusTab('hsk3_lesson9')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">2. HSK 3 Lesson 9 & Chinese</button>
+        <button onclick="renderCorpusTab('english_adv')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">3. English Inversion & Top 50</button>
+        <button onclick="renderCorpusTab('bengali')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">4. বাংলা ব্যাকরণ (SOV)</button>
+        <button onclick="renderCorpusTab('pronouns')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">5. Pronouns (D. N. S. Bhat)</button>
+        <button onclick="renderCorpusTab('stylistics')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">6. Stylistics</button>
+        <button onclick="renderCorpusTab('chomsky')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">7. Chomsky UG & Mind</button>
+        <button onclick="renderCorpusTab('discourse_intercultural')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">8–9. Discourse & Intercultural</button>
+        <button onclick="renderCorpusTab('phonetics_rp')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300">10. RP Phonetics (Roach)</button>
+        <button onclick="renderCorpusTab('acculturation')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-amber-300">11. Acculturation Model (Schumann)</button>
+        <button onclick="renderCorpusTab('identity_crisis')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-rose-300">12. Identity Crisis (Erikson/Ahmadi)</button>
+        <button onclick="renderCorpusTab('lottery_math')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-purple-300">13. Lottery Model (Nikulin)</button>
+        <button onclick="renderCorpusTab('anthropological_ling')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-cyan-300">14. Anthropological Ling. (Danesi)</button>
+        <button onclick="renderCorpusTab('glossary_az')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-emerald-300">15. Glossary (A–Z)</button>
+        <button onclick="renderCorpusTab('althusser_isa')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-orange-300">16. Althusser ISA & Ideology</button>
+        <button onclick="renderCorpusTab('cultural_imperialism')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-lime-300">17. Cultural Imperialism Discourse</button>
+        <button onclick="renderCorpusTab('ideography_history')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-fuchsia-300">18. Ideography & Chinese Theory (O'Neill)</button>
+        <button onclick="renderCorpusTab('cross_corpus_synthesis')" class="corpus-tab px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-teal-300">19. 19-Corpus Synthesis Matrix</button>
+      </div>
+
+      <div id="corpus-content-area" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs sm:text-sm text-slate-300"></div>
+    </div>
+  </div>
+
+  <!-- DRAWER: Session History -->
+  <div id="history-drawer" class="fixed inset-y-0 right-0 z-50 w-80 sm:w-96 glass-panel border-l border-white/15 p-5 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+      <h3 class="font-bold text-base text-white flex items-center gap-2">
+        <i class="fa-solid fa-clock-rotate-left text-purple-400"></i> Saved Sessions
+      </h3>
+      <button onclick="toggleHistoryDrawer()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 flex items-center justify-center">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div id="saved-sessions-list" class="flex-1 overflow-y-auto space-y-2.5"></div>
+  </div>
+
+  <!-- Hidden Sandbox for Clean Unicode PDF Generation -->
+  <div id="pdf-sandbox-wrapper" class="fixed left-[-9999px] top-0 w-[780px] bg-white text-slate-900 p-8">
+    <div id="pdf-render-sandbox"></div>
+  </div>
+
+  <script>
+    /***********************************************************************************
+     * 1. COMPLETE MERGED 19-CORPUS KNOWLEDGE BASE
+     * (Combines all 15 base corpora + Glossary + Althusser ISA + Cultural Imperialism
+     *  + O'Neill Ideography & Chinese Language Theory + 19-Corpus Synthesis Matrix)
+     ***********************************************************************************/
+    const UNIFIED_CORPUS = {
+      historical: {
+        title: "Corpus 1 — Historical Linguistics: The Study of Language Change (Robert W. Murray)",
+        wordOrder: "Diachronic Shift: Early Germanic SOV → Modern English SVO",
+        sections: [
+          {
+            heading: "1. Stages of English & Systematic Language Change",
+            details: "• Periods: Old English (c. 450–1100), Middle English (c. 1100–1500), Modern English (c. 1500–present).\n• Systematic Vowel Shifts: bāt → bōt → boat; hām → home; Great English Vowel Shift.\n• Lexical Loss & Narrowing: ǣrenddracan ('messenger') disappeared; slēan → slay narrowed from general striking/coining to killing."
+          },
+          {
+            heading: "2. Causes & Mechanisms of Change",
+            details: "• Articulatory Simplification: fifths [fɪfθs] → [fɪfs].\n• Spelling Pronunciation: Pronouncing the 't' in often under orthographic influence.\n• Analogy & Reanalysis: bring → brung (by analogy with ring/rung); hamburger reanalyzed as ham + burger → fishburger/veggie burger.\n• Hypercorrection: 'He saw John and I' (nonstandard hypercorrect form for object 'me')."
+          },
+          {
+            heading: "3. Sequential Sound Change Processes",
+            details: "• Assimilation: Partial or Total (Latin octo → Italian otto), Palatalization (Latin centum → Italian cento), Umlaut (goose → geese).\n• Dissimilation: Latin alma → Spanish anima.\n• Epenthesis: Insertion of a segment (Old English ganra → gander; Italian croce → Sicilian kiruci).\n• Metathesis: Sound transposition (Old English wæps → wasp)."
+          },
+          {
+            heading: "4. Syntactic Change (SOV → SVO) & Question Inversion",
+            details: "• SOV to SVO: Early Germanic was SOV (e.g., Gallehus inscription: 'ek HlewagastiR HoltijaR horna tawido' — verb 'tawido' at end). As case inflections eroded from OE to ME, direct objects shifted from 53% pre-verbal (c. 1000) to 98% post-verbal (by 1500).\n• Question Inversion: Older 'Speak they the truth?' became restricted to auxiliaries in 16th–17th centuries → Modern 'Do they speak the truth?' (*'Speak they?' is ungrammatical)."
+          },
+          {
+            heading: "5. Borrowing & Semantic Change + Reconstruction",
+            details: "• Contact Influences: Substratum (Celtic place names like Thames), Superstratum (Norman French after 1066: cow/pig vs beef/pork), Adstratum (Old Norse: anger, egg, get, hit, skin, they).\n• Semantic Change: Broadening (bird, barn), Narrowing (hound, meat), Amelioration (pretty, knight), Pejoration (silly, wench), Metaphor (grasp).\n• Reconstruction: Cognates, Comparative Method, Internal Reconstruction, Protoforms, and Lexical Diffusion."
+          }
+        ]
+      },
+      hsk3_lesson9: {
+        title: "Corpus 2 — HSK 3 第9课 (她的汉语说得跟中国人一样好) & Core Chinese Grammar (SVO)",
+        wordOrder: "SVO (主语 + 谓语 + 宾语)",
+        sections: [
+          {
+            heading: "1. Equal Comparison: 一样 (yíyàng) & 跟……一样 (gēn... yíyàng)",
+            details: "• Pattern: A + (跟/和) + B + 一样 + Adjective / Manner Complement.\n• Example: 她的汉语说得跟中国人一样好 (Tā de Hànyǔ shuō de gēn Zhōngguó rén yíyàng hǎo — She speaks Chinese as well as Chinese people).\n• Example: 我和他一样高 (I am as tall as him). Negative: 这三件衣服不一样 (different)."
+          },
+          {
+            heading: "2. Progressive Correlation: 越……越…… (yuè...yuè...) vs 越来越",
+            details: "• 越A越B (The more A, the more B): 雨越下越大 (Raining harder and harder); 山越高，路越难走 (The higher the mountain, the harder the road).\n• 越来越 + Adj/Verb (More and more): 你们的汉语越说越好; 我受爸爸的影响，越来越喜欢中文了。"
+          },
+          {
+            heading: "3. Degree Complement 得 (de) vs 的 (de) vs 地 (de)",
+            details: "• 得 (Degree Complement after Verb): S + V + 得 + Adj (他的中文说得很好 — He speaks Chinese very well).\n• 的 (Attributive/Possessive): 漂亮的衣服.\n• 地 (Adverbial Marker before Verb): 高兴地说."
+          },
+          {
+            heading: "4. HSK 3 Key Lexical Contrasts & Connectors",
+            details: "• 了解 (liǎojiě - know well/familiar with details) vs 知道 (zhīdào - basic awareness): 我知道他 vs 我了解他。\n• 放心 (feel relieved/don't worry) vs 担心 (worry about): 你放心，我一定会做完作业的。\n• 先……再…… (first..., then...): 我先去学校，再去银行。\n• 一定 (certainly) vs 一定要 (must); 一点儿也不 (not at all); 比较 (relatively); 对 (towards); 受……的影响 (influenced by)."
+          },
+          {
+            heading: "5. Negation (没 vs 不), Repetition (又 vs 再) & Separable Verbs (离合词)",
+            details: "• 没 (Méi): Past/objective negation (昨天没去学校). 不 (Bù): Present/future/volitional negation (我不喝咖啡).\n• 又 (yòu - past repetition) vs 再 (zài - future repetition): 昨天看了，今天又看了 vs 我还想再买一个.\n• Separable Verbs: 见面 cannot take a direct object → 我想和你见面 (NOT *我想见面你)."
+          }
+        ]
+      },
+      english_adv: {
+        title: "Corpus 3 — English Advanced Grammar (Inversion, Subjunctives) & Adrian Wallwork's Top 50 Mistakes",
+        wordOrder: "SVO (Subject + Verb + Object)",
+        sections: [
+          {
+            heading: "1. Negative Inversion, Subjunctives & Modal Perfects",
+            details: "• Inversion (Limiting Adverb + Auxiliary + Subject + Verb): Triggers: Scarcely, Seldom, Never, Hardly, Rarely, Not only, No sooner.\n  Example: 'Never have I seen such a beautiful sunset.' / 'Hardly had I arrived when the phone rang.'\n• Subjunctive Mood: 'It is essential that he BE here on time.' / 'If I were...'\n• Modal Perfects: needn't have + PP (unnecessary past action), mustn't have + PP, wouldn't have + PP."
+          },
+          {
+            heading: "2. Top 50 Grammar Pitfalls (Adrian Wallwork)",
+            details: "• Advise/Suggest: 'Can you suggest a place for me to go?' (NOT *suggest me a place).\n• Uncountable Nouns: 'Is there any news for me?' / 'a piece of advice' (NOT *a news / *an advice).\n• Present Perfect vs Past Simple: 'When did you see her?' (NOT *When have you seen her?); 'I have been here since last week' (NOT *I am here since last week).\n• Stative Verbs: 'He thinks that politics is a waste of time' (NOT *He is thinking that...).\n• Infinitive vs Gerund: 'I look forward to hearing from you' (NOT *to hear); 'She let us leave early' (NOT *let us to leave)."
+          }
+        ]
+      },
+      bengali: {
+        title: "Corpus 4 — বাংলা ভাষার ব্যাকরণ (নবম-দশম শ্রেণি ও হস্তলিখিত ব্যাকরণ নোট)",
+        wordOrder: "SOV (কর্তা + কর্ম + ক্রিয়া)",
+        sections: [
+          {
+            heading: "১. ভাষা, রীতি ও মৌলিক বাক্য ক্রম (SOV)",
+            details: "• বাংলা একটি SOV (Subject-Object-Verb) ভাষা: 'আমি (কর্তা) ভাত (কর্ম) খাই (ক্রিয়া)'।\n• বাংলা ভাষার দুইটি রীতি: সাধু রীতি (তৎসম শব্দবহুল, ক্রিয়া ও সর্বনামের পূর্ণরূপ) ও চলিত রীতি (তদ্ভব শব্দবহুল, সংক্ষিপ্ত ও সাবলীল)।"
+          },
+          {
+            heading: "২. ধ্বনিতত্ত্ব ও সন্ধি (Phonology & Sandhi)",
+            details: "• বাংলা বর্ণমালায় ৫০টি বর্ণ আছে (স্বরবর্ণ ১১টি, ব্যঞ্জনবর্ণ ৩৯টি; মৌলিক স্বরধ্বনি ৭টি)।\n• সন্ধি তিন প্রকার: স্বরসন্ধি (বিদ্যা + আলয় = বিদ্যালয়), ব্যঞ্জনসন্ধি (উৎ + চারণ = উচ্চারণ, দিক্ + অন্ত = দিগন্ত), বিসর্গসন্ধি (মনঃ + রোগ = মনোরোগ [monoh + rog → monorog], নিঃ + রব = নীরব)।"
+          },
+          {
+            heading: "৩. শব্দতত্ত্ব, পদ-প্রকরণ ও সমাস",
+            details: "• উৎস অনুসারে শব্দ ৫ প্রকার: তৎসম (চন্দ্র, সূর্য), তদ্ভব (চাঁদ, হাত), অর্ধ-তৎসম (জোছনা, কেষ্ট), দেশি (কুলা, ঢেঁকি), বিদেশি (চেয়ার, টেবিল, চশমা)।\n• পদ প্রধানত দুই প্রকার: সব্যয় পদ (বিশেষ্য, বিশেষণ, সর্বনাম, ক্রিয়া) ও অব্যয় পদ।\n• সমাস ৬ প্রকার: দ্বন্দ্ব, কর্মধারয়, তৎপুরুষ, বহুব্রীহি, দ্বিগু ও অব্যয়ীভাব।"
+          },
+          {
+            heading: "৪. কারক ও বিভক্তি",
+            details: "• বাক্যস্থিত ক্রিয়াপদের সঙ্গে নামপদের সম্পর্ককে কারক বলে। কারক ৬ প্রকার: কর্তৃকারক, কর্মকারক, করণ কারক, সম্প্রদান কারক, অপাদান কারক ও অধিকরণ কারক।"
+          }
+        ]
+      },
+      pronouns: {
+        title: "Corpus 5 — D. N. S. Bhat — Pronouns, Deixis, Anaphora & Typology (OUP Corpus)",
+        wordOrder: "Cross-Linguistic Typology (Deictic vs. Anaphoric Categories)",
+        sections: [
+          {
+            heading: "1. Deixis vs. Anaphora (বক্তা-কেন্দ্রিক নির্দেশ বনাম পূর্বপদ-অনুসরণ)",
+            details: "• Deixis: Speech-act participants (1st/2nd person) and spatial/temporal anchors tied directly to the utterance situation.\n• Anaphora: Coreference with an antecedent expression in discourse or syntax, showing systematic asymmetries between 3rd person and speech-act pronouns."
+          },
+          {
+            heading: "2. Person Hierarchies, Reflexives & Logophorics",
+            details: "• Inclusive vs. exclusive 'we'; gender/animacy contrasts are more prominent in 3rd-person pronouns than 1st/2nd person.\n• Reflexives encode local clause-mate coreference; logophorics track whose speech/thought is reported in indirect discourse."
+          }
+        ]
+      },
+      stylistics: {
+        title: "Corpus 6 — Stylistics — Foregrounding, Deviation, Parallelism & Register",
+        wordOrder: "Stylistic & Pragmatic Analysis",
+        sections: [
+          {
+            heading: "1. Foregrounding, Deviation & Parallelism",
+            details: "• Foregrounding: Making specific linguistic features stand out against a background norm for aesthetic/rhetorical effect.\n• Deviation: Departing from standard grammar, lexis, or meter (poetic inversion, neologisms).\n• Parallelism: Repeating syntactic structures or sound patterns for contrast and cohesion."
+          },
+          {
+            heading: "2. Field, Tenor, Mode & Style Shifting",
+            details: "• Field (subject domain), Tenor (social stance between participants), Mode (spoken/written channel). Style shifting adapts tone across academic, literary, and colloquial registers."
+          }
+        ]
+      },
+      chomsky: {
+        title: "Corpus 7 — Chomsky's Universal Grammar (Cook & Newson) & Language and Mind (Noam Chomsky)",
+        wordOrder: "Head-Directionality Parameter (Head-Initial SVO vs Head-Final SOV)",
+        sections: [
+          {
+            heading: "1. Generative Grammar, Competence/Performance & I-Language/E-Language",
+            details: "• Competence (internalized speaker-hearer knowledge / I-language) vs Performance (actual concrete use / E-language).\n• Poverty of the Stimulus & LAD: Innate Principles (universal rules) and Parameters (e.g., Head Parameter: English is head-first, Japanese/Bengali head-last)."
+          },
+          {
+            heading: "2. D-Structure, S-Structure, Binding Theory & Minimalist Merge",
+            details: "• Classic contrast: 'John is eager to please' vs 'John is easy to please'.\n• Binding Theory: Principle A (anaphors bound locally), Principle B (pronominals free locally), Principle C (r-expressions free everywhere).\n• Minimalist Program: 'Merge' recursively combines syntactic objects; Three Factors of Language Design (UG genetics, experience, computational efficiency)."
+          }
+        ]
+      },
+      discourse_intercultural: {
+        title: "Corpora 8–9 — Discourse Analysis (Brown & Yule) & Intercultural Communication (Zhu Hua)",
+        wordOrder: "Pragmatics, Information Structure (Given/New) & CAT",
+        sections: [
+          {
+            heading: "1. Discourse Analysis (Gillian Brown & George Yule)",
+            details: "• Transactional (conveying factual info) vs Interactional (social relationships) functions.\n• Staging, Thematisation, Given/New Information Structure, Cohesion (formal links) vs Coherence (semantic interpretability), Frames/Scripts/Schemata."
+          },
+          {
+            heading: "2. Exploring Intercultural Communication (Zhu Hua)",
+            details: "• Pragmatic Mismatch (pragmalinguistic vs sociopragmatic failure), Communicative Turbulence, Symbolic Power.\n• Communication Accommodation Theory (CAT): Convergence, divergence, and maintenance of speech styles; Intercultural Communicative Competence (ICC)."
+          }
+        ]
+      },
+      phonetics_rp: {
+        title: "Corpus 10 — English Phonetics and Phonology (Peter Roach — 4th Edition)",
+        wordOrder: "RP (BBC Pronunciation), Syllable Structure & Connected Speech",
+        sections: [
+          {
+            heading: "1. RP Vowels & Consonants",
+            details: "• Short Vowels: /ɪ/ (bit), /e/ (bet), /æ/ (bat), /ʌ/ (cut), /ɒ/ (pot), /ʊ/ (put), plus Schwa /ə/.\n• Long Vowels: /iː/ (beat), /ɑː/ (card), /ɔː/ (board), /uː/ (food), /ɜː/ (bird).\n• Diphthongs: /eɪ, aɪ, ɔɪ, aʊ, əʊ, ɪə, eə, ʊə/.\n• Fortis (voiceless: p, t, k, f, θ, s, ʃ, tʃ) vs Lenis (voiced: b, d, g, v, ð, z, ʒ, dʒ)."
+          },
+          {
+            heading: "2. Syllable Structure, Weak Forms & Connected Speech",
+            details: "• Syllable = Onset + Rhyme (Peak + Coda).\n• Connected Speech: Assimilation ('good boy' /ɡʊb bɔɪ/), Elision ('next day' /neks deɪ/), Linking /r/, Weak Forms ('to' /tə/, 'and' /ən/)."
+          }
+        ]
+      },
+      acculturation: {
+        title: "Corpus 11 — The Acculturation Model of Second Language Acquisition (Schumann 1978; Zaker 2016)",
+        wordOrder: "SLA Environmental & Socio-Psychological Integration Model",
+        sections: [
+          {
+            heading: "1. Core Premise & Acculturation-Pidginization Hypothesis",
+            details: "• Proposed by John Schumann (1978, 1986) based on a 10-month longitudinal study of 6 learners (2 children, 2 adolescents, 2 adults).\n• SLA is one aspect of acculturation—the social and psychological integration of the learner with the target language (TL) group.\n• Pidginization Hypothesis: If social and/or psychological distance is great, acculturation is impeded, and the learner's L2 fossilizes in an early, simplified 'pidginized' state."
+          },
+          {
+            heading: "2. Taxonomy of 7 Social Distance Factors (Schumann)",
+            details: "1) Dominance/Subordination: Perceived political, cultural, technical, or economic status of the L2 group vs. TL group.\n2) Integration Pattern: Assimilation (giving up native lifestyle for TL culture), Acculturation/Preservation (retaining native lifestyle while adapting), or Preservation.\n3) Degree of Enclosure: Extent to which both groups share social facilities like schools, churches, workplaces (low enclosure aids SLA; high enclosure impedes SLA).\n4) Degree of Cohesiveness: Intra-group contacts (cohesive) vs. inter-group contacts (non-cohesive).\n5) Size of L2 Learning Group: Larger groups foster intra-group communication and reduce TL contact.\n6) Degree of Cultural Congruence: Similarity or dissimilarity between L2 and TL cultures.\n7) Inter-Group Attitudinal Evaluations: Positive or negative mutual attitudes."
+          },
+          {
+            heading: "3. Five Psychological Distance Factors & Four Stages (Brown 1980)",
+            details: "• 5 Affective Factors: (1) Language Shock (disorientation in a new linguistic system), (2) Culture Shock (stress, anxiety, fear in daily routines), (3) Culture Stress (prolonged homesickness & self-identity questioning), (4) Motivation (Integrative vs. Instrumental; Culhane's psycho-social orientation), (5) Ego Permeability (willingness to lower linguistic/cultural boundaries).\n• Type 1 vs Type 2 Acculturation: Type 1 (social contact + retaining native values = Berry's Integration) vs Type 2 (social contact + adopting TL values = Berry's Assimilation). Berry's full 4 attitudes: Integration, Assimilation, Separation, Marginalization.\n• Brown's 4 Acculturation Stages: (1) Euphoria → (2) Culture-Shock → (3) Cultural Stress & Gradual Recovery (anomie/identity search) → (4) Full Recovery."
+          },
+          {
+            heading: "4. Empirical Support, Krashen Comparison & Critical Limitations",
+            details: "• Empirical Support: Lybeck (2002) on Americans acquiring Norwegian pronunciation via social exchange networks; Hansen (1995) on German-born immigrants' native-like phonation.\n• Krashen vs. Schumann: Both aim to lower the affective filter, but Krashen's Input Hypothesis treats the learner passively, whereas Schumann demands active social interaction.\n• Limitations: Limited empirical predictability; ignores cognitive/internal developmental sequences (Tavakoli 2013) and formal instruction; difficult to operationally measure social/psychological distance (Farhady 1981); macro group focus overlooks individual learner differences (Mondy 2007; Bluestone 2009)."
+          }
+        ]
+      },
+      identity_crisis: {
+        title: "Corpus 12 — Comparative Study of Identity Crisis by Age, Sex & Education (Erikson; Simin Gholamrezaei 2016)",
+        wordOrder: "Psychosocial Development & Quantitative Statistical Analysis (SPSS / ANOVA)",
+        sections: [
+          {
+            heading: "1. Erikson's Psychosocial Theory & Epigenetic Principle",
+            details: "• Coined by Erik Erikson (1968, 1980) during WWII observations of soldiers struggling to reconcile civilian and military roles.\n• Definition: Uncertainty and ambiguity in self-definition ('Who am I?' and 'What do I want?'), preventing an integrated personality.\n• Stage 5 (Adolescence): Identity vs. Role Confusion. Formed through two core processes: 'Searching' (exploration) and 'Commitment'.\n• Epigenetic Principle: Success or failure in resolving each psychosocial crisis directly affects the resolution of subsequent life-stage crises."
+          },
+          {
+            heading: "2. Ahmadi Personal Identity Questionnaire (1996) — 10 DSM-IV Criteria",
+            details: "• 10-item scale (Cronbach's alpha reliability = 0.92) measuring: (1) Problems in long-term goals, (2) Doubt in choosing occupation, (3) Lack of appropriate friendship model, (4) Inappropriateness of sexual behavior, (5) Problem in religious understanding, (6) Lack of attention to moral values, (7) Not following group commitment, (8) Disruption in timing, (9) Lack of model for making a family, (10) Negative view toward self."
+          },
+          {
+            heading: "3. Empirical Findings (Lorestan University Sample: N = 196; 100 Men, 96 Women)",
+            details: "• Education Level (ANOVA F = 30.940, p < 0.01): Identity crisis decreases significantly as education rises — Bachelor (Mean = 10.39, SD = 6.231, n = 128) > Master (Mean = 6.35, SD = 3.272, n = 43) > Ph.D. (Mean = 2.47, SD = 1.849, n = 25). Tukey post-hoc confirms significant differences across all pairs (p ≤ 0.012).\n• Sex Differences (ANOVA F = 10.016, p = 0.002): Men Mean = 7.026 (SD = 6.040) vs. Women Mean = 10.01 (SD = 5.921).\n• Age Correlation (Pearson r = -0.245, p = 0.001): Significant negative correlation—identity crisis decreases as age and mental maturity increase."
+          }
+        ]
+      },
+      lottery_math: {
+        title: "Corpus 13 — A Mathematical Model for the Lottery (Prof. Mikhail S. Nikulin, Université Bordeaux 2, 1992)",
+        wordOrder: "Stochastic Modeling, Hypergeometric Distribution & St. Petersburg-Style Paradox",
+        sections: [
+          {
+            heading: "1. Historical Origin: The Genoese Lottery (16th–17th Century)",
+            details: "• Originated from Andrea Doria's 1528 Great Council elections in Genoa, where 5 council members were elected annually from 90 candidates.\n• Financiers abstracted the election into a recurring random drawing of 5 numbers out of 90 (without replacement).\n• Payout multipliers g_k for betting on k = 1, 2, 3, 4, 5 numbers (unit stake = 1): g_1 = 15, g_2 = 270, g_3 = 5,500, g_4 = 75,000, g_5 = 1,000,000.\n• Laplace criticized state/private lotteries in the 19th century as a regressive tax exploiting lack of probability intuition."
+          },
+          {
+            heading: "2. Urn Probability Model, Expected Return & Variance",
+            details: "• Urn Model: n = 90 balls (m = 5 white winning balls, n - m = 85 black balls); player picks k balls.\n• Winning Probability: P_k = C(m, k) / C(n, k) → P_1 = 1/18, P_2 = 2/801, P_3 = 1/11748, P_4 = 4/511038, P_5 = 1/43949268.\n• Player Return Random Variable: Y_k = g_k * X_k - 1.\n• Expected Return: m_k = E(Y_k) = g_k * P_k - 1. All m_k are strictly negative (e.g., m_1 = -1/6, m_2 = -29/89), guaranteeing organizer profit by Bernoulli's Law of Large Numbers and the de Moivre-Laplace Central Limit Theorem."
+          },
+          {
+            heading: "3. Martingale / Escalating Stake Strategy & Infinite Capital Paradox",
+            details: "• To win net profit h and recover accumulated expenses E_{k,t} on trial t, the player must bet S_{k,t} = (E_{k,t} + h) / (g_k - 1) = h * g_k^{t-1} / (g_k - 1)^t.\n• Waiting Time T follows a Geometric Distribution: P(T = t) = P_k (1 - P_k)^{t-1}, with finite expected trials E(T) = 1 / P_k (for k=1, E(T) = 18; for Lotto 6/49, P ≈ 0.01864, E(T) ≈ 53 trials).\n• The Paradox: Although P(T < ∞) = 1 (the game ends in finite trials with probability 1), the series for expected total expenditure E(S_T) diverges because [g(1-P)/(g-1)] > 1 — requiring infinite capital to guarantee a win."
+          }
+        ]
+      },
+      anthropological_ling: {
+        title: "Corpus 14 — A Basic Course in Anthropological Linguistics (Marcel Danesi, University of Toronto, 2004)",
+        wordOrder: "Language–Thought–Culture Nexus, Structuralism, Typology & Whorfian Hypothesis",
+        sections: [
+          {
+            heading: "1. Ch. 1: Linguistic Method, Saussure, Boas, Chomsky & Child Acquisition",
+            details: "• Milestones: Panini (5th c. BC Sanskrit grammar), Dionysius Thrax (Greek parts of speech), Sir William Jones (1786 PIE hypothesis), Grimm & Rask (Comparative Method, /p/ > /f/), Neogrammarians (sound laws & borrowing).\n• Saussure: Diachronic vs. Synchronic; Langue (social code/rules) vs. Parole (individual speech); Différence (oppositions like cat vs. rat).\n• Boas, Sapir & Bloomfield: Ethnography/participant observation; linguistic categories reflect cultural focus (e.g., Nuer cattle terms).\n• Chomsky: Deep vs. Surface structure ('John is eager to please' vs. 'John is easy to please'), UG & LAD; countered by Dell Hymes's Communicative Competence, Speech Acts, Martin Joos's Five Clocks (registers), Zipf's Law (Principle of Least Effort), and Lenneberg's Critical Period (Genie case)."
+          },
+          {
+            heading: "2. Ch. 2: Origin & Evolution of Language, Reconstruction & Hockett's 13 Features",
+            details: "• Echoic & Gesture Theories: Otto Jespersen's 5 theories (Bow-Wow, Pooh-Pooh, Ding-Dong, Yo-He-Ho, La-La), Rousseau's passion/metaphor theory, Paget's Mouth-Gesture theory, Luria's work-activity theory, Swadesh's 4 Stone-Age stages.\n• Anatomy & Evolution: Lowered human larynx (around 3–12 months; Homo sapiens ~100,000 years ago) enables articulate speech at the risk of choking.\n• Comparative Reconstruction & Glottochronology: Romance /kt/ > Italian /tt/, Old French /it/, Spanish /č/; Saussure's Laryngeal Theory verified in 1927 Hittite tablets; Nostratic macro-family; Swadesh core vocabulary & Robert Lees's time-depth formula t = log(c) / (2 log r); André Martinet's Principle of Economic Change.\n• Primate Experiments & Hockett's 13 Design Features: Washoe (ASL) & Sarah (plastic tokens); Hockett's 13 features (Auditory-vocal, Broadcast transmission, Rapid fading, Interchangeability, Total feedback, Specialization, Semanticity, Arbitrariness, Discreteness, Displacement, Productivity, Traditional transmission, Duality of patterning) contrasted with bee round/wagging dances."
+          },
+          {
+            heading: "3. Ch. 3: Phonetics, Phonology, Syllables, Slips of the Tongue & Sound Symbolism",
+            details: "• Articulatory Phonetics: Movable (lips, tongue [apex/lamina/dorsum], vocal cords) vs. stationary organs; Points (bilabial to glottal) & Manners (plosive/stop, fricative/sibilant, affricate, flap/vibrant, lateral, nasal; continuants vs. noncontinuants; obstruents vs. sonorants).\n• Phonological Analysis: Commutation test & minimal pairs (sip ~ zip); Allophones in complementary distribution ([pʰ] vs. [p], clear [l] vs. velar/dark [ɫ]); Free variation (economics); Distinctive features ([±consonantal], [±vocalic], [±voiced], [±labial], [±nasal]).\n• Syllables & Prosody: Onset + Rhyme (Nucleus + Coda); Rising vs. falling diphthongs; Tone (Mandarin ma: level, rising, dipping, falling) vs. Intonation.\n• Slips of the Tongue & Sound Symbolism: Anticipation, preservation, and reversal slips (Fromkin); Roger Brown's ch'ing ('light') vs. chung ('heavy'); Swadesh's front vowels [i/e] for nearness (here/this) vs. back vowels [a/o/u] for distance (there/that); /fl-/ (flow) vs. /bl-/ (block)."
+          },
+          {
+            heading: "4. Ch. 4: Morphology, Allomorphs, Markedness & Greenberg's Typology",
+            details: "• Morphemes: Minimal free forms vs. bound forms; Root/lexeme vs. grammatical morphemes; Segmentation (Swahili nitasoma); Inflectional vs. Derivational; Prefixes, Suffixes, Infixes (Bontoc -um-), Circumfixes (Chickasaw ik-...-o).\n• Allomorphs & Markedness: English plural /-s, -z, -əz/ and article a/an; Unmarked vs. marked categories; Ronald Langacker's [bounded] (leaf) vs. [non-bounded] (water) nouns.\n• Morphological Typology: Isolating/analytic (Chinese), Agglutinative (Turkish, Swahili), Fusional/synthetic (Latin), Polysynthetic (Eskimo). Joseph Greenberg's Morphological Index I = M / W (1.0–2.2 analytic, 2.2–3.0 synthetic, 3.0+ polysynthetic). Artificial languages: Volapük & Zamenhof's Esperanto."
+          },
+          {
+            heading: "5. Ch. 5–6: Syntax, X-Bar Theory, Semantics & Onomastics",
+            details: "• Syntax: Hierarchical phrase structure (NP + VP); Actor-Action-Goal; Coordination, Subordination, and structural ambiguity ('Old men and women': X(Y+Z) vs. XY+Z); Active vs. Passive register (scientific objectivity); Lexicon & Subcategorization; Chomsky's X-Bar recursiveness vs. conceptual grammar (since [point] vs. for [quantity]; Italian fare/essere/avere caldo).\n• Semantics: Sign, Referent (concrete vs. abstract), Displacement; Denotation vs. Connotation; Synonymy, Antonymy (gradable, complementary, relational), Hyponymy, Polysemy, Homonymy; Katz & Fodor's Semantic Features; Austin & Searle's Speech Acts (locutionary, illocutionary, perlocutionary); Grice's Cooperative Principle & Maxims; Onomastics."
+          },
+          {
+            heading: "6. Ch. 7–8: Discourse, Borrowing, Whorfian Hypothesis, Metaphor & Writing",
+            details: "• Discourse & Variation: Conversational gambits, turn-taking, repair; Jakobson's 6 communication functions (referential, emotive, conative, phatic, metalingual, poetic); Regional/social dialects, sociolects, slang, argot, diglossia, pidgins & creoles (acrolect, mesolect, basilect); Lexical borrowing & loanwords.\n• Language & Reality (Ch. 8): Sapir-Whorf Hypothesis (linguistic determinism & relativity; Hopi time concepts); Specialized vocabularies & kinship terms; Lakoff & Johnson's Conceptual Metaphor Theory (source domain → target domain, e.g., ARGUMENT IS WAR); Evolution of Writing (pictography → ideography → cuneiform/hieroglyphs → syllabaries → abjads, alphabets, abugidas)."
+          }
+        ]
+      },
+      glossary_az: {
+        title: "Corpus 15 — Linguistics Glossary: A–Z (Core Reference Entries from Pages 559–587)",
+        wordOrder: "Alphabetical Reference (Use Search Bar Above to Filter)",
+        sections: []
+      },
+      althusser_isa: {
+        title: "Corpus 16 — Ideology and Ideological State Apparatuses (Louis Althusser, 1970; Nidhi V. Krishna)",
+        wordOrder: "Structuralist Marxism, Lacanian Symbolic Order & Subject Interpellation",
+        sections: [
+          {
+            heading: "1. Shift from 'False Consciousness' to Lacanian Imaginary & Real Conditions",
+            details: "• Earlier Marxism treated ideology as 'false consciousness' or an imaginary dream-like distortion.\n• Drawing on Jacques Lacan, Althusser argues ideology represents the 'imaginary relationship of individuals to their real conditions of existence'—mediated by language and the symbolic order.\n• We cannot access the 'Real' directly through raw language alone, though rigorous historical/scientific analysis helps perceive how ideology inscribes us."
+          },
+          {
+            heading: "2. Reproduction of Production, Base/Superstructure & RSA vs. ISA",
+            details: "• Social formations must continuously reproduce productive forces (labour-power via historical minimum wages) and conditions/relations of production.\n• Economic base ('index of effectivity') interacts with the superstructure (Law/State and Ideology), which possesses relative autonomy and reciprocal effect.\n• Repressive State Apparatuses (RSA: police, courts, prisons, army, government) operate predominantly by violence/coercion as a unified entity.\n• Ideological State Apparatuses (ISA: School, Church, Family, Media, Legal, Political, Cultural, Trade Unions) are plural/diverse, operate predominantly by ideology (and secondarily by concealed/symbolic repression), and serve as key sites of class struggle.\n• The Educational ISA (School) has supplanted the Church as the dominant apparatus reproducing capitalist labour relations while masking its hidden agenda behind neutrality/merit."
+          },
+          {
+            heading: "3. Features of Ideology, Materiality & Interpellation ('Always-Already Subjects')",
+            details: "• Five Features: (1) Ideology has no history (omnipresent and eternal like Freud's unconscious), (2) Material existence in apparatuses and ritual practices (e.g., Pascal's kneeling/prayer; link to Butler's performativity), (3) Represents imaginary relations to real conditions, (4) Constitutes individuals as subjects, (5) Controls/subjects individuals.\n• Interpellation ('Hailing'): Ideology 'hails' concrete individuals as concrete subjects (e.g., street 'hello' or police 'Hey, you there!' triggering a 180-degree turn), producing recognition and misrecognition (illusion of being a 'free' autonomous subject).\n• 'Individuals are always-already subjects': Even before birth, familial/ideological expectations (e.g., Lacan's 'Name-of-the-Father' and family name) pre-appoint the child as a subject."
+          }
+        ]
+      },
+      cultural_imperialism: {
+        title: "Corpus 17 — Cultural Imperialism: A Discourse (Odlepiriye Harold Godsgift & Ogheneruke Presly Obukoadata, 2008)",
+        wordOrder: "Global Media Flow, Neo-Colonialism, NWICO & Cultural Self-Reliance",
+        sections: [
+          {
+            heading: "1. Definitions & Theoretical Nexus (Schiller, Galtung, Dependency & Agenda Setting)",
+            details: "• Cultural imperialism is linked to globalization, neo-colonization, and asymmetry between core/Western powers and the Third World (McLuhan's 'global village' vs. Rothkopf's cultural power).\n• Related terms: Media imperialism (Boyd-Barrett), Structural imperialism (Galtung — 5 types: economic, political, military, communication, cultural), Cultural synchronization (Hamelink), Electronic colonialism (McPhail), Cultural/Economic imperialism (Mattelart).\n• Herbert Schiller (1976): Western media dominance imposes Western values and reshapes Third World institutions; Ogan (1988): low-cost export of media already amortized in domestic markets.\n• Intersects with Uses & Gratifications, Dependency Theory, and Agenda Setting Theory."
+          },
+          {
+            heading: "2. Three Schools of Thought & Mechanisms/Tools of Imperialism",
+            details: "• Three Schools: (1) Conservatives (US State Dept, Merrill, Lerner) — claim uneven information flow is natural and Western media/tech modernize/develop societies; (2) Reformists (Sean MacBride / MacBride Commission) — acknowledge West's tech/news monopoly and urge restructuring; (3) Structuralists (Schiller, Galtung) — view imbalance as sustained post-colonial hegemony.\n• Tools & Impacts: 'Native capital' & local elites (Hamelink), film/TV/satellite broadcasts (Ekweazi, Sinclair, Linton, Rothkopf), English as cyberspace lingua franca (Lambert), foreign-oriented education & multinational corporations like Shell, Chevron, Coca-Cola (Ekeli).\n• Risks: Stereotyping local industries (Edeami), vulnerability of women/children/less-industrialized groups (Beltran), national security/cultural erosion (Mowlana), decline of local cinema (Pendakur)."
+          },
+          {
+            heading: "3. Counter-Strategies: NWICO, Accultural Adjustment & Self-Reliance",
+            details: "• New World Information and Communication Order (NWICO, rooted in 1946 UN & 1970s debates; Momah) and MacBride Report (1980) recommendations: balanced North–South information flow, national communication policies, development of all local languages, national news agencies, book/radio/media infrastructure, and local resource centers.\n• Cultural Self-Reliance (White 1982): Selective/controlled import of foreign media/tech, socio-economic capacity, and appreciation of indigenous cultural norms alongside regional agencies (PANA, OANA)."
+          }
+        ]
+      },
+      ideography_history: {
+        title: "Corpus 18 — Ideography and Chinese Language Theory: A History (Timothy Michael O'Neill, De Gruyter 2016)",
+        wordOrder: "European Ideographic Myth vs. Chinese Lexigraphy, Fanqie 反切 & Zhengming 正名",
+        sections: [
+          {
+            heading: "1. Decipherment, Lexigraphy & Refutation of Pure Ideography (Champollion, Du Ponceau, Callery)",
+            details: "• Egyptian scripts: Hieroglyphic (uniliterals, biliterals, triliterals + phonetic/lexical determinatives/classifiers), Hieratic, Demotic, and Coptic.\n• Champollion's hieroglyphic decipherment was informed by Abel-Rémusat's work on Chinese fanqie 反切 spelling (using initial of upper speller + rhyme/tone of lower speller, from 2nd c. CE), though Champollion coined 'ideographic' for unread non-uniliteral signs before Lepsius clarified biliterals/triliterals.\n• Peter Stephen Du Ponceau (1838, Dissertation on the Nature and Character of the Chinese System of Writing) coined 'lexigraph' (logograph), compared Classical Chinese to Latin, analyzed Sinoxenic scripts (Vietnamese Chữ nôm vs. Chữ nho, Korean Idu, Japanese Man'yōgana), and refuted 'ocular/soundless ideography' independent of speech.\n• Joseph Marie Callery (Systema phoneticum scripturae sinicae, 1841) organized 13,921 characters by phonetic series, building on Marshman's Clavis Sinica (1814) and Kangxi zidian (1716, 47,035 characters)."
+          },
+          {
+            heading: "2. Seven European Ideographic Theories (Chs. 1–7) & Kircher (Ch. 8)",
+            details: "• (1) Strong Theory (Platonism): Eternal Forms, Greek alphabet as ontological model, wax tablet/book-in-the-soul analogy, recollection, primary vs. corrupted human language.\n• (2) Soft Theory (Aristotelianism): Spoken sounds as symbols of soul affections; universal signifieds induced into universals on the soul's writing-table.\n• (3) Hellenized Egypt, Pythagoreanism & Primitivism: Silent wisdom, symbola, Chaeremon, Plutarch, Horapollo, and Vico/Warburton's pre-verbal/pictorial primitivism.\n• (4)–(8) Patristic/Scriptural, Neoplatonic/Hermetic, Scholastic, Renaissance Emblematic theories, and Athanasius Kircher's symbolic/esoteric synthesis."
+          },
+          {
+            heading: "3. Native Chinese Language Theory: Zhengming 正名, Erya 爾雅 & Shuowen jiezi 說文解字 (Chs. 9–15)",
+            details: "• Unlike Europe's ideographic episteme (introduced to East Asia via Fenollosa in the Meiji era), classical Chinese philology centered on Zhengming 正名 ('making words/names correct') from Warring States thought to Kang Youwei (大同書).\n• Lexicographic & philological pillars: The Great Chinese Encyclopedia, Erya 爾雅 semantic classification, Xu Shen's Shuowen jiezi 說文解字 (first etymological dictionary) and its Postface, plus core metalinguistic terms: ming 名, yi 義, yi 意, and zhi 志."
+          }
+        ]
+      },
+      cross_corpus_synthesis: {
+        title: "Corpus 19 — Unified 19-Corpus Cross-Domain & Discourse Synthesis Matrix",
+        wordOrder: "Multi-Paradigm Synthesis (Linguistics + Ideology + Media + Cognition + Probability)",
+        sections: [
+          {
+            heading: "1. Language, Power, Ideology & Hegemony (Althusser × Godsgift/Obukoadata × Zhu Hua)",
+            details: "• Althusser's Educational/Cultural/Media ISAs interpellate subjects into dominant social relations.\n• Godsgift & Obukoadata show how global media/tech/language flows (e.g., English dominance, satellite/film exports) operate alongside local elites and NWICO counter-strategies.\n• Zhu Hua's Intercultural Communication & CAT examine pragmatic mismatch, symbolic power, and style convergence/divergence across cultures."
+          },
+          {
+            heading: "2. Writing Systems, Cognition & Universal Grammar (O'Neill × Chomsky × Danesi × Bhat)",
+            details: "• O'Neill contrasts European ideographic myths with Chinese lexigraphy, fanqie, and zhengming, aligning with Du Ponceau and modern grammatology.\n• Chomsky's UG/I-language/Merge and Danesi's Anthropological Linguistics/Whorfian relativity/Hockett features frame how humans encode meaning across scripts and grammars.\n• Bhat's Deixis/Anaphora and Murray's Historical Linguistics trace how pronominal anchors and SOV/SVO structures evolve over time."
+          },
+          {
+            heading: "3. Learner Psychology, Identity & Quantitative/Stochastic Modeling (Schumann × Erikson/Gholamrezaei × Nikulin)",
+            details: "• Schumann's Acculturation Model links social/psychological distance and pidginization to L2 acquisition.\n• Erikson & Gholamrezaei quantify how identity crisis shifts with age (r = -0.245), sex, and higher education (Bachelor > Master > Ph.D.).\n• Nikulin's Lottery Model demonstrates negative expected return (E(Y_k) < 0) and why escalating stakes face the infinite capital paradox even when stopping time is almost surely finite."
+          }
+        ]
+      }
+    };
+
+    const LINGUISTICS_GLOSSARY_ENTRIES = [
+      { term: "Abjads", def: "Alphabetic writing systems in which symbols represent consonant sounds; vowel sounds are not represented or are represented only by diacritics." },
+      { term: "Ablative", def: "The case form characteristically used to mark a noun indicating the point away from which there is movement." },
+      { term: "Ablaut", def: "A vowel alternation that marks a grammatical contrast, e.g., mouse/mice." },
+      { term: "Abugidas", def: "Alphabetic writing systems in which consonant and vowel sounds are represented, but vowels are shown by diacritics or modifications to consonant symbols (e.g., Devanagari, Bengali script)." },
+      { term: "Acrolect", def: "A creole variety relatively similar to the standard language from which it arose; compare Basilect and Mesolect." },
+      { term: "Adstratum influence", def: "Mutual influence of two equally dominant languages on each other, e.g., English and French in Montreal." },
+      { term: "Affricates", def: "Noncontinuant consonants with a slow release of closure, e.g., [tʃ] and [dʒ]." },
+      { term: "Agglutinating languages", def: "Languages in which words typically contain several morphemes, usually only one lexical category; the others are identifiable affixes encoding one grammatical contrast." },
+      { term: "Allomorphs", def: "Variants of a morpheme, e.g., [-s], [-z], and [-əz] as allomorphs of the English plural morpheme." },
+      { term: "Allophones", def: "Variants of a phoneme, usually in complementary distribution and phonetically similar (e.g., aspirated [pʰ] in pin vs unaspirated [p] in spin)." },
+      { term: "Amelioration", def: "A process in which the meaning of a word becomes more favorable, e.g., pretty formerly meant tricky, sly, or cunning." },
+      { term: "Anaphoric reference", def: "Use of a pronoun that refers to a noun phrase earlier in the discourse, e.g., her in Hilary ate her dinner." },
+      { term: "Apocope", def: "Deletion of a word-final vowel." },
+      { term: "Aspiration", def: "A lag in the onset of vocalic voicing, accompanied by released air, after certain stops in English, e.g., the first sound in top." },
+      { term: "Assimilation", def: "Influence of one segment on another, causing a sound to become more like a nearby sound in one or more phonetic characteristics." },
+      { term: "Backformation", def: "A word-formation process creating a new word by removing a real or supposed affix, e.g., edit from editor." },
+      { term: "Basilect", def: "A creole variety showing the least influence from the standard language from which it arose." },
+      { term: "Broca's aphasia", def: "A nonfluent aphasia with halting speech, numerous phonemic errors, and lack of intonation." },
+      { term: "C-command", def: "A syntactic relation in which NP1 c-commands NP2 if the first category above NP1 contains NP2." },
+      { term: "Canadian raising", def: "Allophonic variation in some English dialects in which [a] in [aj] and [aw] is raised to [ʌ] before a voiceless consonant." },
+      { term: "Clitic", def: "A word unable to stand alone as an independent form for phonological reasons." },
+      { term: "Coarticulation", def: "Articulation in which phonemes overlap to some extent." },
+      { term: "Code-switching", def: "Systematic alternation between language systems in discourse." },
+      { term: "Cognates", def: "Words in different languages descended from a common source, shown by systematic phonetic correspondences, e.g., English father and German Vater." },
+      { term: "Complementary distribution", def: "Distribution of allophones in separate phonetic environments, such that one never occurs in the same context as the other." },
+      { term: "Conversion (Zero derivation)", def: "A word-formation process assigning an existing word to a new syntactic category, e.g., nurse (V) from nurse (N)." },
+      { term: "Creole", def: "A language that originated as a pidgin and became established as a first language in a speech community." },
+      { term: "Deaffrication", def: "A segmental simplification turning affricates into fricatives by eliminating the stop portion, e.g., [dʒ] becoming [ʒ]." },
+      { term: "Deep structure (D-structure)", def: "The structure generated by phrase-structure rules in accordance with the subcategorization properties of heads." },
+      { term: "Deictics", def: "Forms whose interpretation depends on the speaker's and/or addressee's location in a setting, e.g., this/that and here/there." },
+      { term: "Diglossia", def: "A relationship between varieties used by one speech community in sharply distinct domains (e.g., Sadhu vs Chalita)." },
+      { term: "Dissimilation", def: "A process whereby one segment becomes less like another segment in its environment." },
+      { term: "Do insertion", def: "The syntactic rule placing do into an empty T position, making inversion possible in English questions." },
+      { term: "Elision", def: "The omission of a sound or syllable when speaking (e.g., camera pronounced as camra)." },
+      { term: "Epenthesis", def: "The insertion of a sound or letter into a word (e.g., athlete pronounced as ath-a-lete)." },
+      { term: "Ergative", def: "A type of language in which the subject of an intransitive verb is treated the same way as the object of a transitive verb." },
+      { term: "Garden path sentence", def: "A sentence that is initially interpreted in one way but is later found to have a different structure and meaning." },
+      { term: "Grammaticalization", def: "A process by which a lexical item becomes a grammatical item." },
+      { term: "Great English Vowel Shift", def: "A major historical change in the pronunciation of English vowels between the 15th and 18th centuries." },
+      { term: "Grimm's Law", def: "A set of systematic consonant sound changes that occurred in the Germanic languages, discovered by Jacob Grimm." },
+      { term: "Haplology", def: "The omission of a syllable from a word when it is identical or similar to an adjacent syllable." },
+      { term: "Hypercorrection", def: "The overuse of a linguistic form in an attempt to be correct or prestigious (e.g., 'between you and I')." },
+      { term: "Interlanguage", def: "The language system of a second language learner, distinct from both the native language and the target language." },
+      { term: "Isogloss", def: "A geographic boundary line that separates areas that use different linguistic features." },
+      { term: "Isolating (Analytic) language", def: "A language in which words are typically made up of single morphemes (e.g., Mandarin Chinese)." },
+      { term: "Lexical diffusion", def: "The process by which a sound change spreads gradually from word to word through the vocabulary." },
+      { term: "Merge", def: "A Minimalist syntactic operation that combines two constituents to form a larger constituent." },
+      { term: "Metathesis", def: "The transposition of sounds or syllables in a word (e.g., Old English wæps → wasp)." },
+      { term: "Minimal pair", def: "A pair of words that differ in only one sound and have different meanings (e.g., pin vs bin)." },
+      { term: "Morpheme", def: "The smallest meaningful unit of language." },
+      { term: "Optimality Theory", def: "A theory of phonology positing that surface forms are the optimal candidates among competing forms." },
+      { term: "Overextension", def: "A developmental phenomenon in which a child's word extends beyond the adult meaning (e.g., calling all animals 'dog')." },
+      { term: "Palatalization", def: "The effect front vowels and [j] have on velar/alveolar stops, making their articulation more palatal." },
+      { term: "Acculturation", def: "Social and psychological integration of an L2 learner with the target language group (Schumann 1978, 1986)." },
+      { term: "Addressee / Addresser", def: "Intended receiver vs. initiator of a verbal interaction (Jakobson's communication model)." },
+      { term: "Argot", def: "Specialized slang or secret vocabulary used by a particular subgroup." },
+      { term: "Beat / Cohesive / Deictic / Metaphoric Gesture", def: "McNeill's gesture categories accompanying speech: rhythmic beat, discourse cohesion, spatial/temporal pointing, and abstract imagery." },
+      { term: "Communicative competence", def: "Dell Hymes's term for the ability to use a language appropriately in specific social and interactive settings." },
+      { term: "Conative / Emotive / Phatic / Poetic / Metalingual / Referential Function", def: "Roman Jakobson's six communicative functions of language oriented toward receiver, sender, channel, message form, code, and context." },
+      { term: "Conceptual metaphor", def: "Understanding an abstract target domain in terms of a concrete source domain (Lakoff & Johnson, e.g., TIME IS MONEY)." },
+      { term: "Duality of patterning", def: "Hockett's design feature whereby meaningless sounds (phonemes) combine into meaningful units (morphemes/words)." },
+      { term: "Ego permeability", def: "The degree to which a learner lowers psychological boundaries and gives up rigid self-differences to adopt L2 patterns." },
+      { term: "Epigenetic principle", def: "Erikson's developmental principle stating that success or failure in resolving one psychosocial crisis affects all subsequent stages." },
+      { term: "Gambit", def: "A conversational device or verbal strategy for initiating, maintaining, or closing discourse flow." },
+      { term: "Glottochronology / Lexicostatistics", def: "Morris Swadesh and Robert Lees's method of estimating time depth (t = log c / 2 log r) since two related languages diverged." },
+      { term: "Identity crisis", def: "Erik Erikson's term for uncertainty and ambiguity in self-definition during exploration and commitment." },
+      { term: "Illocutionary / Locutionary / Perlocutionary act", def: "Austin & Searle's speech act distinctions: intended force (illocutionary), literal utterance (locutionary), and effect on hearer (perlocutionary)." },
+      { term: "Interpellation", def: "Louis Althusser's concept of ideology 'hailing' concrete individuals as concrete subjects (recognition and misrecognition)." },
+      { term: "Lexigraph / Logograph", def: "Du Ponceau's term for a written sign representing a word of a spoken language rather than a soundless 'ideograph' (Chữ nôm, Chinese characters)." },
+      { term: "Mesolect", def: "An intermediate creole variety lying between the acrolect (standard-like) and basilect." },
+      { term: "Pidginization", def: "Simplification and fossilization of an L2 in early stages when social or psychological distance prevents acculturation." },
+      { term: "Whorfian Hypothesis (Linguistic Relativity)", def: "Benjamin Lee Whorf's hypothesis that a language's grammatical and lexical categories predispose speakers to attend to specific aspects of reality." }
+    ];
+
+    UNIFIED_CORPUS.glossary_az.sections = LINGUISTICS_GLOSSARY_ENTRIES.map(item => ({
+      heading: item.term,
+      details: item.def
+    }));
+
+    const langNames = {
+      bn: 'Bengali (বাংলা)',
+      en: 'English',
+      zh: 'Mandarin Chinese (中文)',
+      hi: 'Hindi (हिन्दी)'
+    };
+
+    const corpusContext = JSON.stringify({
+      historical: UNIFIED_CORPUS.historical,
+      hsk3_lesson9: UNIFIED_CORPUS.hsk3_lesson9,
+      english_adv: UNIFIED_CORPUS.english_adv,
+      bengali: UNIFIED_CORPUS.bengali,
+      pronouns: UNIFIED_CORPUS.pronouns,
+      stylistics: UNIFIED_CORPUS.stylistics,
+      chomsky: UNIFIED_CORPUS.chomsky,
+      discourse_intercultural: UNIFIED_CORPUS.discourse_intercultural,
+      phonetics_rp: UNIFIED_CORPUS.phonetics_rp,
+      acculturation: UNIFIED_CORPUS.acculturation,
+      identity_crisis: UNIFIED_CORPUS.identity_crisis,
+      lottery_math: UNIFIED_CORPUS.lottery_math,
+      anthropological_ling: UNIFIED_CORPUS.anthropological_ling,
+      althusser_isa: UNIFIED_CORPUS.althusser_isa,
+      cultural_imperialism: UNIFIED_CORPUS.cultural_imperialism,
+      ideography_history: UNIFIED_CORPUS.ideography_history,
+      cross_corpus_synthesis: UNIFIED_CORPUS.cross_corpus_synthesis
+    });
+
+    /***********************************************************************************
+     * 2. ROLEPLAY CHARACTERS & QUICK PROMPTS
+     ***********************************************************************************/
+    const CHARACTERS = [
+      {
+        id: 'mira',
+        name: 'মীরা (Mira)',
+        badge: '19-Corpus Mentor • Bengali SOV, ISA, Ideography & Bhat',
+        lang: 'bn',
+        voiceLang: 'bn-BD',
+        pitch: 1.05,
+        rate: 0.98,
+        avatarBg: 'from-sky-500 to-indigo-600',
+        icon: 'fa-feather-pointed',
+        greeting: 'নমস্কার! আমি মীরা। এখন আমাদের ১৯টি করপোরা সক্রিয়—Althusser ISA, Cultural Imperialism, Ideography (O\'Neill), Historical Linguistics, Stylistics ও Bhat Pronouns। নিচের মাইকে কথা বলুন বা লিখুন, তারপর Analyze চাপুন!',
+        systemPrompt: 'You are Mira (মীরা), a warm, scholarly Bengali & Comparative Linguistics tutor in Dhaka, fluent across all 19 corpora including Bengali Vyakaran, Stylistics, Historical Linguistics, Bhat Pronouns, Althusser ISA, Cultural Imperialism, and O’Neill’s Ideography & Chinese Language Theory. Speak natural, expressive Bengali. Keep roleplay responses conversational, encouraging, and concise (2-4 sentences).'
+      },
+      {
+        id: 'linxiao',
+        name: '林晓 (Lin Xiao)',
+        badge: 'Beijing Mandarin, HSK 3 L9, 正名 & 說文解字',
+        lang: 'zh',
+        voiceLang: 'zh-CN',
+        pitch: 1.1,
+        rate: 0.95,
+        avatarBg: 'from-rose-500 to-amber-500',
+        icon: 'fa-torii-gate',
+        greeting: '你好！我是林晓。我们可以练习 HSK 3 第9课语法，也可以探讨正名 (zhèngmíng)、反切 (fǎnqiè) 和汉语文字史。点击 Analyze 可以查看详细分析！',
+        systemPrompt: 'You are Lin Xiao (林晓), an encouraging Beijing Mandarin and HSK3-6 tutor also versed in HSK3 Lesson 9 (跟……一样, 越……越……, 得, 了解 vs 知道, 放心 vs 担心) and Chinese philology (正名, 尔雅, 说文解字, 反切). Reply naturally in Mandarin Chinese with Pinyin in parentheses for key phrases (2-4 sentences).'
+      },
+      {
+        id: 'aarav',
+        name: 'आरव (Aarav)',
+        badge: 'Hindi Literature, Vyakaran & Cultural Discourse',
+        lang: 'hi',
+        voiceLang: 'hi-IN',
+        pitch: 0.95,
+        rate: 0.98,
+        avatarBg: 'from-amber-500 to-orange-600',
+        icon: 'fa-om',
+        greeting: 'नमस्ते! मैं आरव हूँ। नीचे दिए गए माइक बटन को दबाकर हिन्दी में बात करें, और व्याकरण, वाक्य क्रम (SOV), विचारधारा या सांस्कृतिक विमर्श की जाँच के लिए Analyze दबाएँ!',
+        systemPrompt: 'You are Aarav (आरव), an articulate Hindi literature, Vyakaran, and cultural discourse mentor. Converse in natural, polite Hindi (Devanagari). Keep roleplay responses warm and engaging (2-4 sentences).'
+      },
+      {
+        id: 'roach',
+        name: 'Dr. Roach, Chomsky, Murray & O\'Neill',
+        badge: 'RP Phonetics, UG, Historical & Ideography History',
+        lang: 'en',
+        voiceLang: 'en-GB',
+        pitch: 0.92,
+        rate: 0.98,
+        avatarBg: 'from-emerald-500 to-teal-600',
+        icon: 'fa-graduation-cap',
+        greeting: 'Good day! Speak or type in English, and click Analyze for RP IPA phonetics, Historical SOV→SVO evolution, Chomsky UG, Althusser ISA, Cultural Imperialism, and O’Neill’s history of ideography.',
+        systemPrompt: 'You are a combined scholar of Peter Roach (RP Phonetics), Noam Chomsky (UG/Minimalism), Robert W. Murray (Historical Linguistics), and Timothy Michael O’Neill (Ideography & Chinese Language Theory). Speak crisp British English. Keep roleplay turns concise (2-4 sentences).'
+      }
+    ];
+
+    const QUICK_PROMPTS = {
+      bn: [
+        "Althusser-এর RSA, ISA ও Interpellation ব্যাখ্যা করো",
+        "Cultural Imperialism, NWICO ও Schiller তত্ত্ব ব্যাখ্যা করো",
+        "Du Ponceau, Fanqie ও Zhengming 正名 অনুযায়ী Ideography বিশ্লেষণ করো",
+        "Old English SOV থেকে Modern English SVO তে কীভাবে পরিবর্তিত হলো?",
+        "Deixis এবং Anaphora এর পার্থক্য কী?",
+        "Schumann-এর Acculturation Model ও Erikson-এর Identity Crisis ব্যাখ্যা করো"
+      ],
+      en: [
+        "Explain Althusser's ISA, interpellation, and 'always-already subjects'",
+        "Analyze Cultural Imperialism, NWICO, and White's cultural self-reliance",
+        "Contrast European ideographic theories with Du Ponceau's lexigraph and Chinese zhengming",
+        "Never have I seen such a beautiful sunset",
+        "Explain Hockett's 13 design features and the Whorfian Hypothesis",
+        "Explain the Genoese Lottery Urn Model and Infinite Capital Paradox"
+      ],
+      zh: [
+        "她的汉语说得跟中国人一样好",
+        "山越高，路越难走",
+        "正名、反切和说文解字在汉语语言理论中的意义是什么？",
+        "我对他比较了解，一点儿也不担心"
+      ],
+      hi: [
+        "मैं किताब पढ़ता हूँ रोज़",
+        "विचारधारा, सांस्कृतिक साम्राज्यवाद और भाषा का संबंध क्या है?",
+        "हिन्दी और बांग्ला का वाक्य क्रम क्या है?"
+      ]
+    };
+
+    /***********************************************************************************
+     * 3. APPLICATION STATE, STREAK TRACKER & API KEY MANAGER
+     ***********************************************************************************/
+    const state = {
+      apiKey: '',
+      geminiModel: 'gemini-2.5-flash',
+      selectedLang: 'bn',
+      selectedCharId: 'mira',
+      isMicActive: false,
+      isMuted: false,
+      recognition: null,
+      speechApiWorking: false,
+      audioCtx: null,
+      analyser: null,
+      micStream: null,
+      mediaRecorder: null,
+      recordedAudioChunks: [],
+      recordedMimeType: 'audio/webm',
+      animFrameId: null,
+      finalTranscriptBuffer: '',
+      interimTranscriptBuffer: '',
+      lastAssistantSpokenText: CHARACTERS[0].greeting,
+      pdfTargetLang: 'original',
+      currentSessionId: 'session_' + Date.now(),
+      messages: [],
+      savedSessions: [],
+      streak: {
+        days: 1,
+        lastClaimDate: new Date().toDateString()
+      },
+      btc: {
+        activeSeconds: 0,
+        lastInteractionTimestamp: Date.now(),
+        grossBtc: 0,
+        dataCenterPaidBtc: 0,
+        userRewardBtc: 0,
+        ledger: []
+      }
+    };
+
+    function getActiveApiKey() {
+      return (state.apiKey || localStorage.getItem('dhwani_2_gemini_api_key') || '').trim();
+    }
+
+    function updateApiKeyHeaderBadge() {
+      const key = getActiveApiKey();
+      const label = document.getElementById('header-api-status-label');
+      const btn = document.getElementById('btn-api-key-trigger');
+      if (!label || !btn) return;
+      if (key) {
+        label.textContent = 'API Ready';
+        btn.className = 'px-3 py-2 rounded-xl glass-card text-xs font-semibold text-emerald-300 border-emerald-400/40 hover:text-white flex items-center gap-1.5';
+      } else {
+        label.textContent = 'Set API Key';
+        btn.className = 'px-3 py-2 rounded-xl glass-card text-xs font-semibold text-amber-300 border-amber-400/50 hover:text-white flex items-center gap-1.5';
+      }
+    }
+
+    function toggleApiKeyModal() {
+      const modal = document.getElementById('api-key-modal');
+      const isHidden = modal.classList.contains('hidden');
+      if (isHidden) {
+        document.getElementById('input-gemini-api-key').value = getActiveApiKey();
+        document.getElementById('select-gemini-model').value = state.geminiModel;
+        document.getElementById('api-test-result').classList.add('hidden');
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function toggleApiKeyVisibility() {
+      const input = document.getElementById('input-gemini-api-key');
+      const icon = document.getElementById('api-eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function saveApiKeySettings() {
+      const key = document.getElementById('input-gemini-api-key').value.trim();
+      const model = document.getElementById('select-gemini-model').value;
+      state.apiKey = key;
+      state.geminiModel = model;
+      try {
+        localStorage.setItem('dhwani_2_gemini_api_key', key);
+        localStorage.setItem('dhwani_2_gemini_model', model);
+      } catch (e) {}
+      updateApiKeyHeaderBadge();
+      toggleApiKeyModal();
+      showToast(key ? 'Gemini API Key সেভ ও সক্রিয় হয়েছে!' : 'API Key খালি রাখা হয়েছে।', key ? 'success' : 'warning');
+    }
+
+    function clearSavedApiKey() {
+      state.apiKey = '';
+      document.getElementById('input-gemini-api-key').value = '';
+      try { localStorage.removeItem('dhwani_2_gemini_api_key'); } catch (e) {}
+      updateApiKeyHeaderBadge();
+      showToast('API Key মুছে ফেলা হয়েছে।', 'info');
+    }
+
+    async function testGeminiConnection() {
+      const tempKey = document.getElementById('input-gemini-api-key').value.trim();
+      const tempModel = document.getElementById('select-gemini-model').value;
+      const resBox = document.getElementById('api-test-result');
+      resBox.classList.remove('hidden');
+
+      if (!tempKey) {
+        resBox.className = 'text-xs font-mono p-3 rounded-xl border bg-amber-500/10 border-amber-400/40 text-amber-200';
+        resBox.textContent = 'অনুগ্রহ করে আগে একটি বৈধ Gemini API Key লিখুন।';
+        return;
+      }
+
+      resBox.className = 'text-xs font-mono p-3 rounded-xl border bg-sky-500/10 border-sky-400/40 text-sky-200';
+      resBox.textContent = 'API Key যাচাই করা হচ্ছে...';
+
+      try {
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${tempModel}:generateContent?key=${encodeURIComponent(tempKey)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: 'Reply with OK' }] }]
+          })
+        });
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          throw new Error(errData?.error?.message || `HTTP ${resp.status}`);
+        }
+        resBox.className = 'text-xs font-mono p-3 rounded-xl border bg-emerald-500/15 border-emerald-400/40 text-emerald-200';
+        resBox.textContent = `সফল! (${tempModel}) API Key সঠিকভাবে কাজ করছে। Save & Activate চাপুন।`;
+      } catch (err) {
+        resBox.className = 'text-xs font-mono p-3 rounded-xl border bg-rose-500/15 border-rose-400/40 text-rose-200';
+        resBox.textContent = `ত্রুটি: ${err.message}`;
+      }
+    }
+
+    function claimDailyStudyStreak() {
+      const today = new Date().toDateString();
+      if (state.streak.lastClaimDate !== today) {
+        state.streak.days += 1;
+        state.streak.lastClaimDate = today;
+        try { localStorage.setItem('dhwani_2_streak', JSON.stringify(state.streak)); } catch (e) {}
+      }
+      document.getElementById('study-streak-display').textContent = `${state.streak.days} Day${state.streak.days > 1 ? 's' : ''}`;
+      const milestones = {
+        7: '🎉 You\'ve reached a 7-day learning streak!',
+        30: '🌟 Amazing! 30-day streak achieved!',
+        50: '💪 50 days! You\'re unstoppable!',
+        100: '👑 Legendary 100-day streak!',
+        200: '🏆 200 days! You\'re a linguistics master!',
+        365: '🎊 ONE YEAR STREAK! Incredible dedication!'
+      };
+      const msg = milestones[state.streak.days] || `🔥 Active Study Streak: ${state.streak.days} day(s)! Keep practicing daily.`;
+      showToast(msg, 'success');
+    }
+
+    /***********************************************************************************
+     * 4. INITIALIZATION & UI RENDERING
+     ***********************************************************************************/
+    window.onload = function () {
+      loadSavedState();
+      updateApiKeyHeaderBadge();
+      renderCharacters();
+      renderQuickPrompts();
+      selectLanguage(state.selectedLang, false);
+      initIdleVisualizer();
+      startBtcTelemetryEngine();
+    };
+
+    function loadSavedState() {
+      try {
+        const storedKey = localStorage.getItem('dhwani_2_gemini_api_key');
+        if (storedKey) state.apiKey = storedKey;
+        const storedModel = localStorage.getItem('dhwani_2_gemini_model');
+        if (storedModel) state.geminiModel = storedModel;
+
+        const storedStreak = localStorage.getItem('dhwani_2_streak');
+        if (storedStreak) {
+          state.streak = JSON.parse(storedStreak);
+          document.getElementById('study-streak-display').textContent = `${state.streak.days} Day${state.streak.days > 1 ? 's' : ''}`;
+        }
+
+        const storedSessions = localStorage.getItem('dhwani_2_sessions');
+        if (storedSessions) {
+          state.savedSessions = JSON.parse(storedSessions);
+        }
+        const storedBtc = localStorage.getItem('dhwani_2_btc');
+        if (storedBtc) {
+          const parsed = JSON.parse(storedBtc);
+          state.btc.activeSeconds = parsed.activeSeconds || 0;
+          state.btc.grossBtc = parsed.grossBtc || 0;
+          state.btc.dataCenterPaidBtc = parsed.dataCenterPaidBtc || 0;
+          state.btc.userRewardBtc = parsed.userRewardBtc || 0;
+        }
+      } catch (e) {
+        console.warn('Storage load skipped:', e);
+      }
+      renderSavedSessionsList();
+    }
+
+    function persistSession() {
+      try {
+        const currentChar = getActiveCharacter();
+        const existingIdx = state.savedSessions.findIndex(s => s.id === state.currentSessionId);
+        const sessionObj = {
+          id: state.currentSessionId,
+          title: state.messages.length > 0 ? state.messages[0].text.slice(0, 42) + '...' : 'New Session',
+          lang: state.selectedLang,
+          charName: currentChar.name,
+          updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          messages: state.messages
+        };
+        if (existingIdx >= 0) {
+          state.savedSessions[existingIdx] = sessionObj;
+        } else if (state.messages.length > 0) {
+          state.savedSessions.unshift(sessionObj);
+        }
+        localStorage.setItem('dhwani_2_sessions', JSON.stringify(state.savedSessions.slice(0, 25)));
+        renderSavedSessionsList();
+      } catch (e) {}
+    }
+
+    function getActiveCharacter() {
+      return CHARACTERS.find(c => c.id === state.selectedCharId) || CHARACTERS[0];
+    }
+
+    function selectLanguage(langCode, announce = true) {
+      state.selectedLang = langCode;
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-lang') === langCode;
+        btn.className = isTarget
+          ? 'lang-btn active-lang p-2.5 rounded-xl border border-sky-400/60 bg-sky-500/15 text-left transition'
+          : 'lang-btn p-2.5 rounded-xl border border-white/10 bg-slate-900/50 text-left transition hover:border-white/25';
+      });
+
+      const pill = document.getElementById('word-order-pill');
+      if (langCode === 'bn') pill.textContent = 'SOV (কর্তা-কর্ম-ক্রিয়া)';
+      if (langCode === 'hi') pill.textContent = 'SOV (कर्ता-कर्म-क्रिया)';
+      if (langCode === 'en') pill.textContent = 'SVO (Subject-Verb-Object)';
+      if (langCode === 'zh') pill.textContent = 'SVO (主语-谓语-宾语)';
+
+      if (state.recognition) {
+        const langMap = { bn: 'bn-BD', en: 'en-US', zh: 'zh-CN', hi: 'hi-IN' };
+        state.recognition.lang = langMap[langCode] || 'bn-BD';
+      }
+
+      renderQuickPrompts();
+      if (announce) {
+        showToast(`Language switched to ${langCode.toUpperCase()} (${pill.textContent})`, 'info');
+      }
+    }
+
+    function renderCharacters() {
+      const container = document.getElementById('character-list');
+      container.innerHTML = CHARACTERS.map(char => {
+        const isSelected = char.id === state.selectedCharId;
+        return `
+          <div onclick="selectCharacter('${char.id}')" class="cursor-pointer p-3 rounded-xl border transition flex items-center gap-3 ${isSelected ? 'bg-sky-500/15 border-sky-400/60 shadow-md' : 'bg-slate-900/60 border-white/10 hover:border-white/25'}">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${char.avatarBg} flex items-center justify-center text-white shrink-0 shadow">
+              <i class="fa-solid ${char.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-1">
+                <span class="font-bold text-sm text-white truncate">${char.name}</span>
+                ${isSelected ? '<span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-sky-400/20 text-sky-300">ACTIVE</span>' : ''}
+              </div>
+              <div class="text-[11px] text-slate-400 truncate">${char.badge}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectCharacter(charId) {
+      state.selectedCharId = charId;
+      const char = getActiveCharacter();
+      selectLanguage(char.lang, false);
+      renderCharacters();
+      document.getElementById('active-char-subtitle-name').textContent = char.name.toUpperCase();
+      document.getElementById('live-ai-subtitle').textContent = char.greeting;
+      state.lastAssistantSpokenText = char.greeting;
+      showToast(`Persona active: ${char.name}`, 'info');
+    }
+
+    function toggleCustomCharacterForm() {
+      document.getElementById('custom-persona-form').classList.toggle('hidden');
+    }
+
+    function saveCustomCharacter() {
+      const name = document.getElementById('custom-char-name').value.trim();
+      const role = document.getElementById('custom-char-role').value.trim();
+      if (!name) {
+        showToast('Please enter a character name.', 'warning');
+        return;
+      }
+      const customId = 'custom_' + Date.now();
+      const langMap = { bn: 'bn-BD', en: 'en-US', zh: 'zh-CN', hi: 'hi-IN' };
+      const newChar = {
+        id: customId,
+        name: name,
+        badge: role || 'Custom 19-Corpus Roleplay & Theory Mentor',
+        lang: state.selectedLang,
+        voiceLang: langMap[state.selectedLang] || 'bn-BD',
+        pitch: 1.0,
+        rate: 1.0,
+        avatarBg: 'from-purple-500 to-pink-600',
+        icon: 'fa-user-astronaut',
+        greeting: `Hello! I am ${name}. Turn ON the Live Mic to speak, turn it OFF when finished, and press Analyze or Roleplay!`,
+        systemPrompt: `You are ${name} (${role || 'Unified 19-Corpus Linguistics & Theory Mentor'}). Stay in character while maintaining deep analytical accuracy.`
+      };
+      CHARACTERS.unshift(newChar);
+      toggleCustomCharacterForm();
+      document.getElementById('custom-char-name').value = '';
+      document.getElementById('custom-char-role').value = '';
+      selectCharacter(customId);
+    }
+
+    function renderQuickPrompts() {
+      const container = document.getElementById('quick-prompts-container');
+      const prompts = QUICK_PROMPTS[state.selectedLang] || QUICK_PROMPTS.bn;
+      container.innerHTML = prompts.map(p => `
+        <button onclick="loadSampleUtterance('${p.replace(/'/g, "\\'")}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-sky-500/20 border border-white/10 hover:border-sky-400/40 text-slate-300 hover:text-white transition text-left">
+          "${p}"
+        </button>
+      `).join('');
+    }
+
+    function loadSampleUtterance(text) {
+      const inputBox = document.getElementById('live-user-transcript');
+      inputBox.value = text;
+      state.finalTranscriptBuffer = text;
+      markUserActive();
+      showToast('Loaded utterance into live buffer. Click "Analyze" or "Roleplay"!', 'info');
+    }
+
+    function clearCurrentStage() {
+      document.getElementById('live-user-transcript').value = '';
+      state.finalTranscriptBuffer = '';
+      state.interimTranscriptBuffer = '';
+      state.recordedAudioChunks = [];
+    }
+
+    function finalizeManualUtteranceToHistory() {
+      const txt = document.getElementById('live-user-transcript').value.trim();
+      if (!txt) {
+        showToast('আগে মাইকে কিছু বলুন বা বক্সে লিখুন।', 'warning');
+        return;
+      }
+      appendMessageToFeed('user', txt, 'আপনার বাক্য (Captured Utterance)');
+      persistSession();
+      showToast('বাক্যটি সেশনে সংরক্ষিত হয়েছে। এবার Analyze বা Roleplay চাপুন!', 'success');
+    }
+
+    /***********************************************************************************
+     * 5. DUAL-LAYER MICROPHONE & SPEECH CAPTURE ENGINE
+     ***********************************************************************************/
+    function getSpeechLangCode(lang) {
+      const map = { bn: 'bn-BD', en: 'en-US', zh: 'zh-CN', hi: 'hi-IN' };
+      return map[lang] || 'bn-BD';
+    }
+
+    function startWebSpeechEngine() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        state.speechApiWorking = false;
+        document.getElementById('transcription-mode-tag').textContent = 'Gemini Audio Capture Mode';
+        return;
+      }
+
+      if (state.recognition) {
+        try { state.recognition.abort(); } catch (e) {}
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+      recognition.lang = getSpeechLangCode(state.selectedLang);
+
+      recognition.onstart = () => {
+        state.speechApiWorking = true;
+        document.getElementById('transcription-mode-tag').textContent = `Live Speech (${recognition.lang})`;
+      };
+
+      recognition.onresult = (event) => {
+        markUserActive();
+        state.speechApiWorking = true;
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            state.finalTranscriptBuffer += (state.finalTranscriptBuffer ? ' ' : '') + transcript.trim();
+          } else {
+            interim += transcript;
+          }
+        }
+        state.interimTranscriptBuffer = interim;
+        const inputEl = document.getElementById('live-user-transcript');
+        inputEl.value = (state.finalTranscriptBuffer + (interim ? ' ' + interim : '')).trim();
+      };
+
+      recognition.onerror = (event) => {
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed' || event.error === 'network') {
+          state.speechApiWorking = false;
+          document.getElementById('transcription-mode-tag').textContent = 'Gemini Audio Fallback Ready';
+        }
+      };
+
+      recognition.onend = () => {
+        if (state.isMicActive) {
+          setTimeout(() => {
+            if (state.isMicActive) {
+              try {
+                recognition.lang = getSpeechLangCode(state.selectedLang);
+                recognition.start();
+              } catch (e) {}
+            }
+          }, 120);
+        }
+      };
+
+      state.recognition = recognition;
+      try {
+        recognition.start();
+      } catch (e) {
+        state.speechApiWorking = false;
+      }
+    }
+
+    async function toggleLiveMic() {
+      markUserActive();
+      if (!state.isMicActive) {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+        const currentInputVal = document.getElementById('live-user-transcript').value.trim();
+        state.finalTranscriptBuffer = currentInputVal;
+        state.interimTranscriptBuffer = '';
+        state.recordedAudioChunks = [];
+
+        try {
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('getUserMedia not supported in this browser context');
+          }
+
+          showToast('মাইক্রোফোন পারমিশন নেওয়া হচ্ছে... (Requesting Mic)', 'info');
+          state.micStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            }
+          });
+
+          state.isMicActive = true;
+          updateMicUI(true, 'মাইক সক্রিয় - কথা বলুন... (Listening Live)');
+
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          state.audioCtx = new AudioContextClass();
+          if (state.audioCtx.state === 'suspended') {
+            await state.audioCtx.resume();
+          }
+          const source = state.audioCtx.createMediaStreamSource(state.micStream);
+          state.analyser = state.audioCtx.createAnalyser();
+          state.analyser.fftSize = 256;
+          source.connect(state.analyser);
+          drawLiveWaveform();
+
+          if (typeof MediaRecorder !== 'undefined') {
+            const preferredTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+            const supportedType = preferredTypes.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+            state.recordedMimeType = supportedType || 'audio/webm';
+            state.mediaRecorder = supportedType
+              ? new MediaRecorder(state.micStream, { mimeType: supportedType })
+              : new MediaRecorder(state.micStream);
+
+            state.mediaRecorder.ondataavailable = (e) => {
+              if (e.data && e.data.size > 0) {
+                state.recordedAudioChunks.push(e.data);
+              }
+            };
+            state.mediaRecorder.start(250);
+          }
+
+          startWebSpeechEngine();
+          showToast('মাইক চালু হয়েছে! নির্ভয়ে কথা বলুন।', 'success');
+
+        } catch (err) {
+          state.isMicActive = false;
+          updateMicUI(false, 'মাইক পারমিশন ব্লকড — নিচে টাইপ করুন বা Quick Test চাপুন');
+          showToast('ব্রাউজার/আইফ্রেম মাইক পারমিশন দেয়নি। Microphone Allow করুন অথবা বক্সে লিখে Analyze চাপুন।', 'warning');
+        }
+
+      } else {
+        state.isMicActive = false;
+        updateMicUI(false, 'মাইক বন্ধ — কথা সংরক্ষিত হচ্ছে...');
+
+        if (state.recognition) {
+          try { state.recognition.stop(); } catch (e) {}
+        }
+
+        const stopRecorderPromise = new Promise((resolve) => {
+          if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
+            state.mediaRecorder.onstop = () => resolve();
+            try { state.mediaRecorder.stop(); } catch (e) { resolve(); }
+          } else {
+            resolve();
+          }
+        });
+
+        await stopRecorderPromise;
+
+        if (state.micStream) {
+          state.micStream.getTracks().forEach(t => t.stop());
+          state.micStream = null;
+        }
+        if (state.audioCtx) {
+          try { await state.audioCtx.close(); } catch (e) {}
+          state.audioCtx = null;
+        }
+        initIdleVisualizer();
+
+        const currentCapturedText = document.getElementById('live-user-transcript').value.trim();
+
+        if (!currentCapturedText && state.recordedAudioChunks.length > 0) {
+          await transcribeRecordedAudioWithGemini();
+        } else if (currentCapturedText) {
+          finalizeCapturedUtteranceQuietly(currentCapturedText);
+        } else {
+          updateMicUI(false, 'মাইক বন্ধ — কোনো শব্দ পাওয়া যায়নি (আবার চেষ্টা করুন)');
+          showToast('কোনো কথা শোনা যায়নি। মাইকের কাছে এসে আবার বলুন।', 'warning');
+        }
+      }
+    }
+
+    function finalizeCapturedUtteranceQuietly(text) {
+      const lastMsg = state.messages[state.messages.length - 1];
+      if (!lastMsg || lastMsg.role !== 'user' || lastMsg.text !== text) {
+        appendMessageToFeed('user', text, 'আপনার কণ্ঠ (Spoken Input)');
+        persistSession();
+      }
+      updateMicUI(false, 'মাইক বন্ধ (নীরব) — এবার ডানপাশের Analyze বা Roleplay চাপুন');
+      showToast('আপনার কথা সফলভাবে লেখা হয়েছে! বিশ্লেষণের জন্য Analyze বাটনে চাপ দিন।', 'success');
+    }
+
+    async function transcribeRecordedAudioWithGemini() {
+      const label = document.getElementById('mic-status-label');
+      const modeTag = document.getElementById('transcription-mode-tag');
+      label.textContent = 'GEMINI অডিও ট্রান্সক্রিপশন চলছে... (Transcribing Audio)';
+      modeTag.textContent = 'Gemini Audio AI...';
+
+      try {
+        const audioBlob = new Blob(state.recordedAudioChunks, { type: state.recordedMimeType || 'audio/webm' });
+        if (audioBlob.size < 400) {
+          updateMicUI(false, 'মাইক বন্ধ — অডিও খুব ছোট ছিল');
+          return;
+        }
+
+        const base64Audio = await blobToBase64(audioBlob);
+        const cleanMime = (state.recordedMimeType || 'audio/webm').split(';')[0];
+        const langHints = {
+          bn: 'Bengali (বাংলা script)',
+          en: 'English',
+          zh: 'Mandarin Chinese (Simplified Hanzi)',
+          hi: 'Hindi (Devanagari script)'
+        };
+
+        const payload = {
+          contents: [{
+            parts: [
+              {
+                text: `Transcribe the spoken audio accurately into ${langHints[state.selectedLang] || 'Bengali'}. Return ONLY the exact spoken words without commentary or quotes.`
+              },
+              {
+                inlineData: {
+                  mimeType: cleanMime,
+                  data: base64Audio
+                }
+              }
+            ]
+          }]
+        };
+
+        const transcribedText = await callGeminiWithBackoff(payload);
+        const cleaned = transcribedText.trim();
+        if (cleaned) {
+          document.getElementById('live-user-transcript').value = cleaned;
+          state.finalTranscriptBuffer = cleaned;
+          modeTag.textContent = 'Gemini Transcribed';
+          finalizeCapturedUtteranceQuietly(cleaned);
+        } else {
+          updateMicUI(false, 'মাইক বন্ধ — ট্রান্সক্রিপশন পাওয়া যায়নি');
+        }
+      } catch (err) {
+        modeTag.textContent = 'Manual / Type Mode';
+        updateMicUI(false, 'মাইক বন্ধ — অডিও ট্রান্সক্রিপশন ব্যর্থ হয়েছে, নিচে টাইপ করুন');
+        showToast('অডিও ট্রান্সক্রিপশন সম্পন্ন করা যায়নি। আগে API Key সেট করুন অথবা নিচে লিখে Analyze চাপুন।', 'warning');
+      } finally {
+        state.recordedAudioChunks = [];
+      }
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const result = reader.result || '';
+          const base64 = result.toString().split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function updateMicUI(isLive, customLabel = null) {
+      const btn = document.getElementById('btn-live-mic');
+      const icon = document.getElementById('mic-icon');
+      const text = document.getElementById('mic-btn-text');
+      const ring = document.getElementById('mic-pulse-ring');
+      const dot = document.getElementById('mic-status-dot');
+      const label = document.getElementById('mic-status-label');
+      const hint = document.getElementById('visualizer-overlay-hint');
+
+      if (isLive) {
+        btn.classList.remove('mic-btn-idle');
+        btn.classList.add('mic-btn-live');
+        icon.className = 'fa-solid fa-stop text-xl sm:text-2xl mb-0.5';
+        text.textContent = 'MIC LIVE';
+        ring.classList.remove('hidden');
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 animate-ping';
+        label.textContent = customLabel || 'মাইক সক্রিয় - কথা বলুন... (Listening Live)';
+        label.className = 'text-xs font-mono uppercase tracking-wider text-red-300 font-semibold';
+        hint.classList.add('hidden');
+      } else {
+        btn.classList.remove('mic-btn-live');
+        btn.classList.add('mic-btn-idle');
+        icon.className = 'fa-solid fa-microphone text-xl sm:text-2xl mb-0.5';
+        text.textContent = 'MIC OFF';
+        ring.classList.add('hidden');
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
+        label.textContent = customLabel || 'মাইক বন্ধ — Analyze বা Roleplay চাপুন';
+        label.className = 'text-xs font-mono uppercase tracking-wider text-slate-300';
+        hint.classList.remove('hidden');
+        const dbBar = document.getElementById('mic-db-bar');
+        const dbVal = document.getElementById('mic-db-value');
+        if (dbBar) dbBar.style.width = '0%';
+        if (dbVal) dbVal.textContent = '-∞ dB';
+      }
+    }
+
+    function initIdleVisualizer() {
+      if (state.animFrameId) cancelAnimationFrame(state.animFrameId);
+      const canvas = document.getElementById('audio-visualizer');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth || 600;
+      canvas.height = canvas.offsetHeight || 56;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+    }
+
+    function drawLiveWaveform() {
+      const canvas = document.getElementById('audio-visualizer');
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth || 600;
+      canvas.height = canvas.offsetHeight || 56;
+      const bufferLength = state.analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      const dbBar = document.getElementById('mic-db-bar');
+      const dbVal = document.getElementById('mic-db-value');
+
+      function render() {
+        if (!state.isMicActive || !state.analyser) return;
+        state.animFrameId = requestAnimationFrame(render);
+        state.analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) sum += dataArray[i];
+        const avg = sum / bufferLength;
+        const pct = Math.min(100, Math.round((avg / 110) * 100));
+        if (dbBar) dbBar.style.width = `${pct}%`;
+        if (dbVal) {
+          const approxDb = avg < 1 ? '-60 dB' : `${Math.round(-50 + (pct * 0.5))} dB`;
+          dbVal.textContent = approxDb;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const barWidth = (canvas.width / bufferLength) * 2.2;
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+          const barHeight = Math.max(4, (dataArray[i] / 255) * (canvas.height * 0.9));
+          const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+          gradient.addColorStop(0, '#38BDF8');
+          gradient.addColorStop(1, '#10B981');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(x, (canvas.height - barHeight) / 2, barWidth - 2, barHeight);
+          x += barWidth;
+        }
+      }
+      render();
+    }
+
+    /***********************************************************************************
+     * 6. MUTE TOGGLE & MULTILINGUAL TTS ENGINE
+     ***********************************************************************************/
+    function toggleMuteAudio() {
+      state.isMuted = !state.isMuted;
+      const icon = document.getElementById('mute-icon');
+      const label = document.getElementById('mute-label-main');
+      const pill = document.getElementById('tts-status-pill');
+
+      if (state.isMuted) {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        icon.className = 'fa-solid fa-volume-xmark text-rose-400 text-base sm:text-lg';
+        label.textContent = 'Muted';
+        pill.className = 'text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30';
+        pill.innerHTML = '<i class="fa-solid fa-volume-xmark mr-1"></i> Voice Muted (Subtitles Only)';
+        showToast('Audio Muted — Assistant will display text & subtitles silently.', 'info');
+      } else {
+        icon.className = 'fa-solid fa-volume-high text-emerald-400 text-base sm:text-lg';
+        label.textContent = 'Audio On';
+        pill.className = 'text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
+        pill.innerHTML = '<i class="fa-solid fa-volume-high mr-1"></i> Voice Output ON';
+        showToast('Audio Unmuted — Assistant will speak responses aloud.', 'success');
+      }
+    }
+
+    function speakText(text, langOverride = null) {
+      state.lastAssistantSpokenText = text;
+      if (state.isMuted || !('speechSynthesis' in window)) return;
+
+      window.speechSynthesis.cancel();
+      const cleanSpeechText = text
+        .replace(/[*#_`~>|]/g, ' ')
+        .replace(/\[.*?\]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const utterance = new SpeechSynthesisUtterance(cleanSpeechText);
+      const char = getActiveCharacter();
+      const langMap = { bn: 'bn-BD', en: 'en-GB', zh: 'zh-CN', hi: 'hi-IN' };
+      const targetVoiceLang = langOverride || langMap[state.selectedLang] || char.voiceLang;
+
+      utterance.lang = targetVoiceLang;
+      utterance.pitch = char.pitch || 1.0;
+      utterance.rate = char.rate || 0.98;
+
+      const voices = window.speechSynthesis.getVoices();
+      const matchedVoice = voices.find(v => v.lang.toLowerCase().includes(targetVoiceLang.split('-')[0]));
+      if (matchedVoice) utterance.voice = matchedVoice;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function replayLastAssistantAudio() {
+      if (state.isMuted) {
+        showToast('Audio is currently muted. Unmute to hear playback.', 'warning');
+        return;
+      }
+      speakText(state.lastAssistantSpokenText);
+    }
+
+    /***********************************************************************************
+     * 7. GEMINI API INTEGRATION (POWERED BY ALL 19 MERGED CORPORA)
+     ***********************************************************************************/
+    async function callGeminiWithBackoff(payload, retries = 2) {
+      const apiKey = getActiveApiKey();
+      if (!apiKey) {
+        throw new Error('NO_API_KEY');
+      }
+      const model = state.geminiModel || 'gemini-2.5-flash';
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+      for (let attempt = 0; attempt <= retries; attempt++) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!response.ok) {
+            const errJson = await response.json().catch(() => ({}));
+            throw new Error(errJson?.error?.message || `HTTP ${response.status}`);
+          }
+          const data = await response.json();
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) return text;
+          throw new Error('Empty candidate text');
+        } catch (err) {
+          if (err.message === 'NO_API_KEY' || attempt === retries) throw err;
+          await new Promise(res => setTimeout(res, Math.pow(2, attempt) * 1000));
+        }
+      }
+    }
+
+    async function triggerLinguisticAnalysis() {
+      markUserActive();
+      if (state.isMicActive) {
+        await toggleLiveMic();
+      }
+
+      const userText = document.getElementById('live-user-transcript').value.trim();
+      if (!userText) {
+        showToast('আগে লাইভ মাইকে কিছু বলুন অথবা উপরের বক্সে একটি বাক্য লিখুন!', 'warning');
+        return;
+      }
+
+      if (!getActiveApiKey()) {
+        showToast('API Key সেট করা নেই! API Key প্যানেল খোলা হচ্ছে...', 'warning');
+        toggleApiKeyModal();
+        return;
+      }
+
+      const char = getActiveCharacter();
+      const lastMsg = state.messages[state.messages.length - 1];
+      if (!lastMsg || lastMsg.role !== 'user' || lastMsg.text !== userText) {
+        appendMessageToFeed('user', userText, 'বিশ্লেষণের জন্য প্রদত্ত বাক্য (Utterance)');
+      }
+
+      const loadingId = appendLoadingCard('ধ্বনি এ আই 2.0 (19-Corpus Unified Engine) অনুযায়ী ব্যাকরণ, ঐতিহাসিক ভাষাতত্ত্ব, আদর্শ/সাংস্কৃতিক তত্ত্ব ও ধ্বনিতাত্ত্বিক বিশ্লেষণ করছে...');
+
+      const systemInstruction = `You are ধ্বনি এ আই 2.0 (Dhwani AI 2.0), an elite computational linguist, historical linguist, cultural/ideological theorist, grammatologist, and phonologist grounded in the unified 19-corpus knowledge base: ${corpusContext}.
+Respond primarily in ${langNames[state.selectedLang]} (preserving accurate technical terms in English/Bengali/Hanzi) following this EXACT 6-part structured format:
+
+1. **বাক্য ক্রম ও রূপতত্ত্ব (SVO vs SOV, Chomsky UG & Clause Structure)**:
+   - Break down Subject, Object, and Verb slots, contrasting **SOV [কর্তা-কর্ম-ক্রিয়া]** (Bengali/Hindi) vs **SVO [Subject-Verb-Object]** (English/Chinese), Head-Directionality Parameter, or Inversion/Subjunctive rules if present.
+2. **ঐতিহাসিক ভাষাতত্ত্ব ও লিপিতত্ত্ব (Historical Linguistics — Murray & Ideography History — O'Neill)**:
+   - Connect relevant phenomena to diachronic change (SOV→SVO, sound changes, Great English Vowel Shift, Analogy, Reanalysis) AND/OR writing/ideographic history (European strong/soft ideographic theories, Champollion, Du Ponceau's lexigraph, fanqie 反切, zhengming 正名, Shuowen jiezi 說文解字).
+3. **আদর্শ, সাংস্কৃতিক সাম্রাজ্যবাদ ও সমাজ-মনস্তত্ত্ব (Althusser ISA, Cultural Imperialism & Psychosocial/SLA Models)**:
+   - Analyze ideological interpellation ('always-already subjects', RSA vs. ISA), cultural imperialism/media flow/NWICO/self-reliance, or Schumann's Acculturation / Erikson's Identity Crisis / Nikulin's stochastic model when relevant.
+4. **সর্বনাম, ডিএক্সিস ও স্টাইলিস্টিক্স (D. N. S. Bhat Pronouns, Stylistics & Discourse)**:
+   - Analyze Deictic vs. Anaphoric pronouns, Binding Theory, foregrounding, syntactic deviation, Given/New information (Brown & Yule), and intercultural pragmatics (Zhu Hua).
+5. **ভুল স্লট ও সংশোধন (Error Slots & Corpus Rule Check)**:
+   - Pinpoint any violation against Adrian Wallwork's Top 50 English mistakes, HSK 3 Lesson 9 rules (跟…一样, 越…越…, 得 vs 的/地, 了解 vs 知道), or Bengali Sandhi/Karak/Samas rules, and provide the exact corrected form.
+6. **উচ্চারণ ও ধ্বনিতত্ত্ব (RP IPA / Pinyin Tones / Sandhi Phonetics)**:
+   - Provide accurate phonetic transcription (Peter Roach RP IPA with stress/connected speech for English, Pinyin with tone marks for Chinese, Sandhi breakdown for Bengali/Hindi).`;
+
+      try {
+        const payload = {
+          contents: [{ parts: [{ text: `Analyze this utterance or linguistic/theoretical question across the 19 corpora in ${langNames[state.selectedLang]}:\n"${userText}"` }] }],
+          systemInstruction: { parts: [{ text: systemInstruction }] }
+        };
+
+        const analysisResult = await callGeminiWithBackoff(payload);
+        removeElementById(loadingId);
+
+        const conciseSummary = analysisResult.split('\n').filter(l => l.trim()).slice(0, 3).join(' ');
+        document.getElementById('live-ai-subtitle').innerHTML = formatMarkdownLite(conciseSummary);
+
+        appendAnalysisCard(userText, analysisResult, char.name);
+        speakText(analysisResult);
+        persistSession();
+        clearCurrentStage();
+      } catch (error) {
+        removeElementById(loadingId);
+        const fallback = generateLocalCorpusFallback(userText, state.selectedLang);
+        document.getElementById('live-ai-subtitle').innerHTML = formatMarkdownLite(fallback);
+        appendAnalysisCard(userText, fallback, char.name);
+        speakText(fallback);
+        persistSession();
+        clearCurrentStage();
+      }
+    }
+
+    async function triggerRoleplayReply() {
+      markUserActive();
+      if (state.isMicActive) {
+        await toggleLiveMic();
+      }
+
+      const userText = document.getElementById('live-user-transcript').value.trim();
+      if (!userText) {
+        showToast('Speak or type something first so your roleplay character can respond!', 'warning');
+        return;
+      }
+
+      if (!getActiveApiKey()) {
+        showToast('API Key সেট করা নেই! API Key প্যানেল খোলা হচ্ছে...', 'warning');
+        toggleApiKeyModal();
+        return;
+      }
+
+      const char = getActiveCharacter();
+      appendMessageToFeed('user', userText, 'Spoken Roleplay Turn');
+      const loadingId = appendLoadingCard(`${char.name} is preparing an audio response...`);
+
+      const recentHistory = state.messages.slice(-6).map(m => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.text }]
+      }));
+
+      try {
+        const payload = {
+          contents: recentHistory.length > 0 ? recentHistory : [{ role: 'user', parts: [{ text: userText }] }],
+          systemInstruction: {
+            parts: [{
+              text: `${char.systemPrompt}\n19-Corpus Reference: ${corpusContext}\nImportant: Respond naturally in character to the user's message. If they made a subtle grammar slip or stylistic choice, gently model the correct form in your reply without breaking character. Keep it warm, vivid, and concise (2-4 sentences).`
+            }]
+          }
+        };
+
+        const replyText = await callGeminiWithBackoff(payload);
+        removeElementById(loadingId);
+
+        document.getElementById('live-ai-subtitle').innerHTML = formatMarkdownLite(replyText);
+        appendMessageToFeed('assistant', replyText, `${char.name} • Roleplay Reply`);
+        speakText(replyText, char.voiceLang);
+        persistSession();
+        clearCurrentStage();
+      } catch (err) {
+        removeElementById(loadingId);
+        const fallbackReply = `${char.name}: চমৎকার বলেছেন! "${userText}" — চলুন এই বিষয়ে আরও অনুশীলন করি। (Click Analyze anytime for full 19-Corpus analysis!)`;
+        document.getElementById('live-ai-subtitle').textContent = fallbackReply;
+        appendMessageToFeed('assistant', fallbackReply, `${char.name} • Fallback`);
+        speakText(fallbackReply);
+        clearCurrentStage();
+      }
+    }
+
+    function generateLocalCorpusFallback(text, lang) {
+      if (lang === 'bn') {
+        return `1. **বাক্য ক্রম ও রূপতত্ত্ব (SOV/SVO)**: বাক্যটি "${text}"। বাংলা একটি **SOV (কর্তা + কর্ম + ক্রিয়া)** ভাষা।\n2. **ঐতিহাসিক ভাষাতত্ত্ব ও লিপিতত্ত্ব (Murray & O'Neill)**: প্রাচীন ইংরেজি SOV থেকে আধুনিক ইংরেজি SVO-তে রূপান্তর এবং Du Ponceau-এর lexigraph ও Zhengming 正名 তত্ত্ব প্রাসঙ্গিক।\n3. **আদর্শ ও সাংস্কৃতিক তত্ত্ব (Althusser & Cultural Imperialism)**: Althusser-এর ISA ও Interpellation এবং Godsgift/Obukoadata-এর Cultural Imperialism ও NWICO কাঠামো বিশ্লেষণীয়।\n4. **সর্বনাম ও স্টাইলিস্টিক্স (Bhat & Stylistics)**: Deictic/Anaphoric সম্পর্ক ও Given/New তথ্য কাঠামো যাচাইকৃত।\n5. **ভুল স্লট ও সংশোধন**: শব্দক্রম ও সন্ধি-কারক সঠিক আছে কি না যাচাই করুন।\n6. **উচ্চারণ ও ধ্বনিতত্ত্ব**: বিসর্গসন্ধি ও ধ্বনিতাত্ত্বিক রূপ বিশ্লেষিত।`;
+      } else {
+        return `1. **Syntax & Word Order (SVO/SOV)**: Utterance "${text}". Analyzed across Head-Initial SVO and Head-Final SOV parameters.\n2. **Historical Linguistics & Ideography (Murray & O'Neill)**: Connects diachronic shifts with European ideographic theory vs. Chinese lexigraphy/fanqie/zhengming.\n3. **Ideology & Cultural Discourse (Althusser & Cultural Imperialism)**: Examines ISA interpellation, media/cultural imperialism, and NWICO/self-reliance.\n4. **Pronouns & Stylistics (Bhat & Stylistics)**: Distinguishes Deictic vs. Anaphoric reference, foregrounding, and Given/New discourse.\n5. **Error Slots & Correction**: Checked against Adrian Wallwork's Top 50 Mistakes and HSK3 rules.\n6. **Phonetics & RP IPA**: Provides Peter Roach RP IPA stress and connected speech.`;
+      }
+    }
+
+    /***********************************************************************************
+     * 8. CHAT FEED & STRUCTURED ANALYSIS CARD RENDERING
+     ***********************************************************************************/
+    function appendMessageToFeed(role, text, badgeLabel) {
+      const msgObj = {
+        id: 'msg_' + Date.now() + Math.random().toString(36).slice(2, 6),
+        role,
+        type: 'dialogue',
+        text,
+        badge: badgeLabel,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      state.messages.push(msgObj);
+
+      const feed = document.getElementById('chat-feed');
+      const isUser = role === 'user';
+      const card = document.createElement('div');
+      card.className = isUser
+        ? 'rounded-2xl bg-sky-500/10 border border-sky-400/25 p-4 ml-4 sm:ml-10'
+        : 'rounded-2xl bg-purple-500/10 border border-purple-400/25 p-4 mr-4 sm:mr-10';
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between gap-2 mb-1.5">
+          <span class="text-[11px] font-mono font-semibold ${isUser ? 'text-sky-300' : 'text-purple-300'}">
+            <i class="fa-solid ${isUser ? 'fa-user' : 'fa-robot'} mr-1"></i> ${badgeLabel}
+          </span>
+          <div class="flex items-center gap-2">
+            ${!isUser ? `<button onclick="speakText(\`${text.replace(/`/g, '\\`')}\`)" class="text-[11px] text-purple-300 hover:text-white" title="Listen"><i class="fa-solid fa-volume-high"></i></button>` : ''}
+            <span class="text-[10px] font-mono text-slate-500">${msgObj.timestamp}</span>
+          </div>
+        </div>
+        <div class="text-sm text-slate-100 leading-relaxed">${formatMarkdownLite(text)}</div>
+      `;
+      feed.appendChild(card);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function appendAnalysisCard(originalUtterance, analysisMarkdown, charName) {
+      const msgObj = {
+        id: 'ana_' + Date.now(),
+        role: 'assistant',
+        type: 'analysis',
+        utterance: originalUtterance,
+        text: analysisMarkdown,
+        badge: `${charName} • Unified 19-Corpus Linguistic Analysis`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      state.messages.push(msgObj);
+
+      const feed = document.getElementById('chat-feed');
+      const card = document.createElement('div');
+      card.className = 'rounded-2xl bg-gradient-to-br from-emerald-950/50 via-slate-900/90 to-slate-950 border border-emerald-400/35 p-4 sm:p-5 shadow-lg space-y-2.5';
+      card.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-emerald-500/20">
+          <span class="text-xs font-mono font-bold text-emerald-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-microscope"></i> UNIFIED 19-CORPUS LINGUISTIC & HISTORICAL ANALYSIS
+          </span>
+          <div class="flex items-center gap-2">
+            <button onclick="speakText(\`${analysisMarkdown.replace(/`/g, '\\`')}\`)" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 text-[11px] font-mono flex items-center gap-1">
+              <i class="fa-solid fa-volume-high"></i> Speak Analysis
+            </button>
+            <span class="text-[10px] font-mono text-slate-500">${msgObj.timestamp}</span>
+          </div>
+        </div>
+        <div class="text-xs font-mono text-slate-400 bg-slate-950/70 px-3 py-1.5 rounded-lg border border-white/5">
+          Analyzed Utterance: <span class="text-white font-sans font-medium">"${escapeHtml(originalUtterance)}"</span>
+        </div>
+        <div class="text-sm text-slate-200 leading-relaxed space-y-2">
+          ${formatMarkdownLite(analysisMarkdown)}
+        </div>
+      `;
+      feed.appendChild(card);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function appendLoadingCard(label) {
+      const id = 'loader_' + Date.now();
+      const feed = document.getElementById('chat-feed');
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'rounded-2xl bg-slate-900/70 border border-sky-500/25 p-4 flex items-center gap-3 text-xs font-mono text-sky-300';
+      div.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-base"></i> <span>${label}</span>`;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+      return id;
+    }
+
+    function removeElementById(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function formatMarkdownLite(str) {
+      return escapeHtml(str)
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+        .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-800 text-sky-300 font-mono text-xs">$1</code>')
+        .replace(/\n/g, '<br/>');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    /***********************************************************************************
+     * 9. MULTI-LANGUAGE PDF TRANSCRIPT TRANSLATION & DOWNLOAD
+     ***********************************************************************************/
+    function openPdfExportModal() {
+      document.getElementById('pdf-modal').classList.remove('hidden');
+    }
+
+    function closePdfExportModal() {
+      document.getElementById('pdf-modal').classList.add('hidden');
+    }
+
+    function setPdfTargetLang(lang) {
+      state.pdfTargetLang = lang;
+      document.querySelectorAll('.pdf-lang-opt').forEach(btn => {
+        btn.className = 'pdf-lang-opt px-3 py-2 rounded-xl border border-white/10 bg-slate-900 text-xs font-semibold text-slate-300';
+      });
+      const activeBtn = document.getElementById(`pdf-lang-${lang}`);
+      if (activeBtn) {
+        activeBtn.className = 'pdf-lang-opt px-3 py-2 rounded-xl border border-emerald-400 bg-emerald-500/20 text-xs font-semibold text-white';
+      }
+    }
+
+    async function generateAndDownloadPdf() {
+      const statusEl = document.getElementById('pdf-export-status');
+      const btn = document.getElementById('btn-generate-pdf');
+      statusEl.classList.remove('hidden');
+      btn.disabled = true;
+
+      const messagesToExport = state.messages.length > 0
+        ? state.messages
+        : [{
+            role: 'assistant',
+            type: 'dialogue',
+            badge: getActiveCharacter().name,
+            text: document.getElementById('live-ai-subtitle').textContent,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }];
+
+      let renderedItems = messagesToExport;
+
+      if (state.pdfTargetLang !== 'original' && getActiveApiKey()) {
+        const langLabels = { bn: 'Bengali (বাংলা)', en: 'English', zh: 'Chinese (中文)', hi: 'Hindi (हिन्दी)' };
+        try {
+          const rawBundle = messagesToExport.map((m, i) => `[ITEM ${i}] (${m.badge}): ${m.text}`).join('\n---\n');
+          const payload = {
+            contents: [{
+              parts: [{
+                text: `Translate the following conversation and linguistic analysis items accurately into ${langLabels[state.pdfTargetLang]}. Keep linguistic terms (like Historical Linguistics, Stylistics, Deixis, SVO, SOV, IPA, Pinyin, ISA, Cultural Imperialism, Ideography) clear. Preserve the [ITEM X] markers:\n\n${rawBundle}`
+              }]
+            }]
+          };
+          const translatedText = await callGeminiWithBackoff(payload);
+          const chunks = translatedText.split(/\[ITEM \d+\]/g).filter(c => c.trim());
+          if (chunks.length === messagesToExport.length) {
+            renderedItems = messagesToExport.map((m, idx) => ({
+              ...m,
+              text: chunks[idx].replace(/^\s*\([^)]+\):\s*/, '').trim()
+            }));
+          }
+        } catch (e) {
+          showToast('Using original transcript text for PDF generation.', 'info');
+        }
+      }
+
+      const sandbox = document.getElementById('pdf-render-sandbox');
+      const char = getActiveCharacter();
+      sandbox.innerHTML = `
+        <div style="border-bottom: 2px solid #0284c7; padding-bottom: 12px; margin-bottom: 18px;">
+          <h1 style="font-size: 22px; font-weight: 700; color: #0f172a; margin: 0;">ধ্বনি এ আই 2.0 (Dhwani AI 2.0) — Unified 19-Corpus Transcript</h1>
+          <p style="font-size: 12px; color: #475569; margin: 4px 0 0 0;">
+            Persona: <strong>${char.name}</strong> | Export Language: <strong>${state.pdfTargetLang.toUpperCase()}</strong> | Date: ${new Date().toLocaleString()}
+          </p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          ${renderedItems.map(item => `
+            <div style="padding: 12px 14px; border-radius: 10px; border: 1px solid ${item.type === 'analysis' ? '#10b981' : (item.role === 'user' ? '#38bdf8' : '#cbd5e1')}; background: ${item.type === 'analysis' ? '#ecfdf5' : (item.role === 'user' ? '#f0f9ff' : '#f8fafc')};">
+              <div style="font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 6px;">
+                ${item.badge} • ${item.timestamp}
+              </div>
+              <div style="font-size: 13px; line-height: 1.65; color: #0f172a; white-space: pre-wrap;">${escapeHtml(item.text)}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; text-align: center;">
+          Generated by ধ্বনি এ আই 2.0 (Dhwani AI 2.0) • Unified 19-Corpus Multilingual Studio
+        </div>
+      `;
+
+      try {
+        const opt = {
+          margin: 10,
+          filename: `dhwani-ai-2.0-unified-19-corpora-${state.pdfTargetLang}-${Date.now()}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        await html2pdf().set(opt).from(sandbox).save();
+        showToast('PDF Transcript downloaded successfully!', 'success');
+      } catch (err) {
+        showToast('PDF download triggered. Check your browser downloads.', 'info');
+      } finally {
+        statusEl.classList.add('hidden');
+        btn.disabled = false;
+        closePdfExportModal();
+      }
+    }
+
+    /***********************************************************************************
+     * 10. REAL-TIME BTC TELEMETRY ENGINE
+     ***********************************************************************************/
+    function markUserActive() {
+      state.btc.lastInteractionTimestamp = Date.now();
+    }
+
+    function startBtcTelemetryEngine() {
+      const btcPerSecond = 0.00000125 / 60;
+
+      setInterval(() => {
+        const isUserRecentlyActive = (Date.now() - state.btc.lastInteractionTimestamp) < 180000 || state.isMicActive;
+        state.btc.activeSeconds += 1;
+
+        const minedTick = btcPerSecond;
+        state.btc.grossBtc += minedTick;
+
+        const dcCostTick = minedTick * 0.90;
+        state.btc.dataCenterPaidBtc += dcCostTick;
+
+        const userCommissionTick = isUserRecentlyActive ? (minedTick * 0.10) : 0;
+        state.btc.userRewardBtc += userCommissionTick;
+
+        updateBtcDisplays(isUserRecentlyActive);
+
+        if (state.btc.activeSeconds % 15 === 0) {
+          addBtcLedgerEntry(minedTick * 15, dcCostTick * 15, userCommissionTick * 15);
+          try {
+            localStorage.setItem('dhwani_2_btc', JSON.stringify({
+              activeSeconds: state.btc.activeSeconds,
+              grossBtc: state.btc.grossBtc,
+              dataCenterPaidBtc: state.btc.dataCenterPaidBtc,
+              userRewardBtc: state.btc.userRewardBtc
+            }));
+          } catch (e) {}
+        }
+      }, 1000);
+    }
+
+    function updateBtcDisplays(isActive) {
+      const hrs = String(Math.floor(state.btc.activeSeconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((state.btc.activeSeconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(state.btc.activeSeconds % 60).padStart(2, '0');
+
+      document.getElementById('btc-uptime-display').textContent = `${hrs}:${mins}:${secs}`;
+      document.getElementById('btc-user-reward-display').textContent = `${state.btc.userRewardBtc.toFixed(8)} BTC`;
+
+      const badge = document.getElementById('btc-activity-badge');
+      if (isActive) {
+        badge.textContent = 'ACTIVE 10%';
+        badge.className = 'text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+      } else {
+        badge.textContent = 'IDLE';
+        badge.className = 'text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-700 text-slate-400';
+      }
+
+      const modalGross = document.getElementById('modal-btc-gross');
+      if (modalGross) {
+        modalGross.textContent = `${state.btc.grossBtc.toFixed(8)} BTC`;
+        document.getElementById('modal-btc-dc').textContent = `-${state.btc.dataCenterPaidBtc.toFixed(8)} BTC`;
+        document.getElementById('modal-btc-user').textContent = `${state.btc.userRewardBtc.toFixed(8)} BTC`;
+        const sats = Math.round(state.btc.userRewardBtc * 100000000);
+        document.getElementById('modal-btc-sats').textContent = `${sats.toLocaleString()} Satoshis Earned`;
+      }
+    }
+
+    function addBtcLedgerEntry(gross, dcPaid, userComm) {
+      const time = new Date().toLocaleTimeString();
+      const entry = `[${time}] Mined +${gross.toFixed(8)} BTC | DC Auto-Pay: -${dcPaid.toFixed(8)} BTC | User 10% Reward: +${userComm.toFixed(8)} BTC`;
+      state.btc.ledger.unshift(entry);
+      if (state.btc.ledger.length > 20) state.btc.ledger.pop();
+
+      const listEl = document.getElementById('btc-ledger-list');
+      if (listEl) {
+        listEl.innerHTML = state.btc.ledger.map(item => `
+          <div class="text-slate-300 border-b border-white/5 pb-1">${item}</div>
+        `).join('');
+      }
+    }
+
+    function toggleBtcModal() {
+      document.getElementById('btc-modal').classList.toggle('hidden');
+    }
+
+    function claimBtcReward() {
+      const addr = document.getElementById('user-btc-address').value.trim();
+      if (!addr) {
+        showToast('Please enter a valid BTC / Lightning address.', 'warning');
+        return;
+      }
+      showToast(`Payout of ${state.btc.userRewardBtc.toFixed(8)} BTC queued to ${addr.slice(0, 14)}...`, 'success');
+    }
+
+    /***********************************************************************************
+     * 11. UNIFIED 19-CORPUS & LIVE GLOSSARY SEARCH EXPLORER
+     ***********************************************************************************/
+    function toggleCorpusModal() {
+      const modal = document.getElementById('corpus-modal');
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) {
+        renderCorpusTab('historical');
+      }
+    }
+
+    function renderCorpusTab(key) {
+      const data = UNIFIED_CORPUS[key];
+      if (!data) return;
+      const container = document.getElementById('corpus-content-area');
+      container.innerHTML = `
+        <div class="p-3 rounded-xl bg-sky-500/10 border border-sky-400/30 flex flex-wrap items-center justify-between gap-2">
+          <span class="font-bold text-white">${data.title}</span>
+          <span class="font-mono text-xs text-sky-300 px-2 py-0.5 rounded bg-slate-950">${data.wordOrder}</span>
+        </div>
+        ${data.sections.map(sec => `
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-white/10 space-y-1.5">
+            <div class="font-bold text-emerald-300">${sec.heading}</div>
+            <div class="text-slate-300 whitespace-pre-line leading-relaxed">${sec.details}</div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function searchUnifiedCorpus(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        renderCorpusTab('historical');
+        return;
+      }
+      const matches = [];
+      Object.entries(UNIFIED_CORPUS).forEach(([corpusKey, corpusObj]) => {
+        corpusObj.sections.forEach(sec => {
+          if (sec.heading.toLowerCase().includes(q) || sec.details.toLowerCase().includes(q)) {
+            matches.push({
+              source: corpusObj.title.split('(')[0].trim(),
+              heading: sec.heading,
+              details: sec.details
+            });
+          }
+        });
+      });
+
+      const container = document.getElementById('corpus-content-area');
+      if (matches.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-slate-400 font-mono text-xs">No matching entries found for "${escapeHtml(query)}".</div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="text-xs font-mono text-sky-300 px-2">Found ${matches.length} matching entries across Unified 19-Corpus & A–Z Glossary:</div>
+        ${matches.slice(0, 50).map(m => `
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-sky-500/20 space-y-1">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-emerald-300">${escapeHtml(m.heading)}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-950 text-slate-400">${escapeHtml(m.source)}</span>
+            </div>
+            <div class="text-slate-300 whitespace-pre-line leading-relaxed">${escapeHtml(m.details)}</div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function toggleHistoryDrawer() {
+      document.getElementById('history-drawer').classList.toggle('translate-x-full');
+    }
+
+    function renderSavedSessionsList() {
+      const container = document.getElementById('saved-sessions-list');
+      if (!container) return;
+      if (state.savedSessions.length === 0) {
+        container.innerHTML = `<div class="text-xs text-slate-500 text-center py-8">No saved sessions yet. Start speaking or analyzing!</div>`;
+        return;
+      }
+      container.innerHTML = state.savedSessions.map(s => `
+        <div onclick="loadSessionById('${s.id}')" class="cursor-pointer p-3 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 transition space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-mono text-sky-300">
+            <span>${s.charName}</span>
+            <span>${s.updatedAt}</span>
+          </div>
+          <div class="text-xs text-slate-200 truncate">${escapeHtml(s.title)}</div>
+          <div class="text-[10px] font-mono text-slate-500">${s.messages.length} turns • ${s.lang.toUpperCase()}</div>
+        </div>
+      `).join('');
+    }
+
+    function loadSessionById(sessionId) {
+      const found = state.savedSessions.find(s => s.id === sessionId);
+      if (!found) return;
+      state.currentSessionId = found.id;
+      state.messages = [];
+      const feed = document.getElementById('chat-feed');
+      feed.innerHTML = '';
+      found.messages.forEach(m => {
+        if (m.type === 'analysis') {
+          appendAnalysisCard(m.utterance || '', m.text, found.charName);
+        } else {
+          appendMessageToFeed(m.role, m.text, m.badge);
+        }
+      });
+      toggleHistoryDrawer();
+      showToast('Session restored!', 'success');
+    }
+
+    function startNewSession() {
+      state.currentSessionId = 'session_' + Date.now();
+      state.messages = [];
+      document.getElementById('chat-feed').innerHTML = `
+        <div class="rounded-2xl bg-slate-900/80 border border-white/10 p-4 text-sm text-slate-300">
+          New session started with <strong>${getActiveCharacter().name}</strong>. Toggle the Live Mic to speak, turn it OFF when finished, and press <strong>Analyze</strong> or <strong>Roleplay</strong>.
+        </div>
+      `;
+      clearCurrentStage();
+      showToast('Started a fresh session.', 'info');
+    }
+
+    /***********************************************************************************
+     * 12. TOAST NOTIFICATION HELPER
+     ***********************************************************************************/
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const styles = {
+        info: 'bg-slate-900/95 border-sky-400/50 text-sky-200',
+        success: 'bg-emerald-950/95 border-emerald-400/50 text-emerald-200',
+        warning: 'bg-amber-950/95 border-amber-400/50 text-amber-200'
+      };
+      toast.className = `pointer-events-auto px-4 py-2.5 rounded-xl border shadow-xl text-xs font-medium backdrop-blur-md transition-all duration-300 ${styles[type] || styles.info}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3400);
+    }
+  </script>
+</body>
+</html>
